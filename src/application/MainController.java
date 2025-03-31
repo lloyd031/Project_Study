@@ -177,10 +177,28 @@ public class MainController implements Initializable{
             try {
 				String run=r.setSuctionLine(evapTemp, condenseTemp, designTemp);
 				if(run.equals("")) {
-					System.out.println("equivalent size for suction line "+ r.getSuctionLineSize());
+					double suctionLineSize=r.getSuctionLineSize();
+					System.out.println("equivalent size for suction line "+ suctionLineSize);
 					String liquidline= r.setLiquidLine(evapTemp, condenseTemp, designTemp);
 					if(liquidline.equals("")) {
-						System.out.println("equivalent size for liquid line "+ r.getLiquidLineSize());
+						double liquidLineSize=r.getLiquidLineSize();
+						System.out.println("equivalent size for liquid line "+ liquidLineSize);
+						double suctionLineLength= r.getEquivalentLengthSuctionLine(suctionLineSize);
+						double liquidLineLength= r.getEquivalentLengthLiquidLine(liquidLineSize);
+						double liquidTempDrp=r.getTempDropLiquidLine(liquidLineSize,liquidLineLength,r.capacityInKW(cap));
+						//convert double into scientific notation
+						String scientificNotation = String.format("%.2e", liquidTempDrp);
+						String[] parts = scientificNotation.split("e");
+						String base = parts[0];
+						String exponent = parts[1].replace("+", "");
+						System.out.println(base + "x10^" + exponent);
+						double suctionTempDrp=r.getTempDropSuctionLine(suctionLineSize,suctionLineLength,r.capacityInKW(cap));
+						String scientificNotation1 = String.format("%.2e", suctionTempDrp);
+						String[] parts1 = scientificNotation1.split("e");
+						String base1 = parts1[0];
+						String exponent1 = parts1[1].replace("+", "");
+						System.out.println(base1 + "x10^" + exponent1);
+						//System.out.println("temp drop for liquid line "+ liquidTempDrp);
 					}
 					
 				}
