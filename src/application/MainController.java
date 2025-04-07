@@ -55,8 +55,8 @@ public class MainController implements Initializable{
     private PathNode start;
     private PathNode end;
     private Group flowlinea;
-    private double width=50;
-    private double height=20;
+    private double width=65;
+    private double height=40;
     private double length=70;
     private int selectedwall=2;
     private Box[] n;
@@ -166,41 +166,88 @@ public class MainController implements Initializable{
             this.ref = cbboxref.getValue();
         });
         runbtn.setOnMouseClicked(e->{
-        	Run r=new Run((cbboxref.getValue()==null)?"R-22":this.ref);
-        	double cap=r.capacityIntons(this.length/10, this.width/10);
-        	lblcap.setText(String.format("%.5f",cap));
-        	lblcap2.setText(String.format("%.5f",r.capacityInKW(cap)));
         	double evapTemp=Double.parseDouble(txtevaptemp.getText());
         	double condenseTemp=Double.parseDouble(txtcondensetemp.getText());
         	double designTemp=Double.parseDouble(txtdesigntemp.getText());
             System.out.println(evapTemp +" "+ condenseTemp+ " "+ designTemp );
+        	Run r=new Run((cbboxref.getValue()==null)?"R-22":this.ref,evapTemp, condenseTemp, designTemp);
+        	double cap=r.capacityIntons(this.length/10, this.width/10);
+        	lblcap.setText(String.format("%.5f",cap));
+        	lblcap2.setText(String.format("%.5f",r.capacityInKW(cap)));
+        	//double h4=r.getEnthalpyLiquid();
             try {
-				String run=r.setSuctionLine(evapTemp, condenseTemp, designTemp);
+				String run=r.setSuctionLine();
 				if(run.equals("")) {
 					double suctionLineSize=r.getSuctionLineSize();
-					System.out.println("equivalent size for suction line "+ suctionLineSize);
-					String liquidline= r.setLiquidLine(evapTemp, condenseTemp, designTemp);
-					if(liquidline.equals("")) {
-						double liquidLineSize=r.getLiquidLineSize();
-						System.out.println("equivalent size for liquid line "+ liquidLineSize);
-						double suctionLineLength= r.getEquivalentLengthSuctionLine(suctionLineSize);
-						double liquidLineLength= r.getEquivalentLengthLiquidLine(liquidLineSize);
-						double liquidTempDrp=r.getTempDropLiquidLine(liquidLineSize,liquidLineLength,r.capacityInKW(cap));
-						//convert double into scientific notation
-						String scientificNotation = String.format("%.2e", liquidTempDrp);
-						String[] parts = scientificNotation.split("e");
-						String base = parts[0];
-						String exponent = parts[1].replace("+", "");
-						System.out.println(base + "x10^" + exponent);
-						double suctionTempDrp=r.getTempDropSuctionLine(suctionLineSize,suctionLineLength,r.capacityInKW(cap));
-						String scientificNotation1 = String.format("%.2e", suctionTempDrp);
-						String[] parts1 = scientificNotation1.split("e");
-						String base1 = parts1[0];
-						String exponent1 = parts1[1].replace("+", "");
-						System.out.println(base1 + "x10^" + exponent1);
-						//System.out.println("temp drop for liquid line "+ liquidTempDrp);
+					
+					
+					String enthalpy=r.setEnthalpyLiquid();
+					if(enthalpy.equals("")) {
+						String liquidline= r.setLiquidLine();
+						if(liquidline.equals("")) {
+							System.out.println("Liquid line ");
+							double liquidLineSize=r.getLiquidLineSize();
+							System.out.println("equivalent size for liquid line "+ liquidLineSize);
+							double liquidLineLength= r.getEquivalentLength(liquidLineSize,3.45);
+							double liquidTempDrp=r.getTempDropLiquidLine(liquidLineSize,liquidLineLength,r.capacityInKW(cap));
+							System.out.println("liquidLineLength "+liquidLineLength);
+							String scientificNotation = String.format("%.2e", liquidTempDrp);
+							String[] parts = scientificNotation.split("e");
+							String base = parts[0];
+							String exponent = parts[1].replace("+", "");
+							System.out.println("tempdrop liquid line  "+base + "x10^" + exponent);
+							double pressureDropLiquid=r.getPressureDropLiquid()*(liquidTempDrp/0.02);
+							System.out.println("pressure drop liquid line "+pressureDropLiquid);
+							double pressureFromRiser=r.getPressureDropFromRiser(pressureDropLiquid);
+							System.out.println("pressure drop from the riser "+pressureFromRiser);
+							System.out.println("total pressure drop "+ (pressureDropLiquid + pressureFromRiser));
+							
+							System.out.println();
+							System.out.println("Suction line ");
+							System.out.println("equivalent size for suction line "+ suctionLineSize);
+							double suctionLineLength= r.getEquivalentLength(suctionLineSize,0);
+							System.out.println("suctionLineLength "+suctionLineLength);
+							double suctionTempDrp=r.getTempDropSuctionLine(suctionLineSize,suctionLineLength,r.capacityInKW(cap));
+							String scientificNotation1 = String.format("%.2e", suctionTempDrp);
+							String[] parts1 = scientificNotation1.split("e");
+							String base1 = parts1[0];
+							String exponent1 = parts1[1].replace("+", "");
+							System.out.println("tempdrop suction line  "+ base1 + "x10^" + exponent1);
+							
+							double pressureDropSuction=r.getPressureDropSuction()*suctionTempDrp/designTemp;
+							System.out.println("pressure drop suction line "+pressureDropSuction);
+							double h1=r.getEnthalpyGas();
+							double h4=r.getEnthalpyLiquid();
+							System.out.println("Refrigeration effect "+ h1 + " - "+ h4 + " = "+(h1-h4));
+							double m=r.getCapacityInKW()/(h1-h4);
+							double volGas =r.getSpecVolumeGas();
+							double velocityInSuctionLine=volGas*m;
+							System.out.println("Refrigerant velocity in suction line "+ velocityInSuctionLine);
+							double volLiquid =r.getSpecVolumeLiquid();
+							double velocityInLiquidLine=volLiquid*m;
+							System.out.println("Refrigerant velocity in liquid line "+ velocityInLiquidLine);
+							/**
+							 * 
+							
+							//convert double into scientific notation
+							
+							
+							String scientificNotation1 = String.format("%.2e", suctionTempDrp);
+							String[] parts1 = scientificNotation1.split("e");
+							String base1 = parts1[0];
+							String exponent1 = parts1[1].replace("+", "");
+							System.out.println(base1 + "x10^" + exponent1);
+							 */
+							//System.out.println("temp drop for liquid line "+ liquidTempDrp);
+						}else {
+							System.out.println(liquidline);
+						}
+					}else {
+						System.out.println(enthalpy);
 					}
 					
+				}else {
+					    System.out.println(run);
 				}
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block

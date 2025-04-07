@@ -11,8 +11,16 @@ public class Run{
 	private double mmsuction=0;
 	private double mmliquid=0;
 	private double tableCap=0;
-	public Run(String ref) {
+	private double evapTemp=0; 
+	private double condenseTemp=0;
+	private double designTemp=0;
+	private double h4=0;
+	File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
+	public Run(String ref, double evapTemp, double condenseTemp, double designTemp) {
 		this.refrigerant=ref;
+		this.condenseTemp=condenseTemp;
+		this.evapTemp=evapTemp;
+		this.designTemp=designTemp;
 	}
 	public double capacityIntons(double l, double w) {
 		   sysCapacityInTons = (l*w*500)/12000;
@@ -22,93 +30,103 @@ public class Run{
 		   sysCapacityInKW = val*(211)*1/60;
 		   return sysCapacityInKW;
 	   }
-	public String setSuctionLine(double evapTemp, double condenseTemp, double designTemp) throws FileNotFoundException {
-		String msg="";
-		File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
+public String setSuctionLine() throws FileNotFoundException {
+		
+		
 		Scanner scanner= new Scanner(table);
-		while(scanner.hasNextLine()) {
-			String ref=scanner.nextLine();
-			if(ref.equals(this.refrigerant+"{")) {
-				String evptmp="";
-				while(!evptmp.equals(evapTemp+"{") && !evptmp.equals("};"+this.refrigerant+" closing")) {
-					evptmp=scanner.nextLine();
-				}
-				if(evptmp.equals("};"+this.refrigerant+" closing")) {
-					msg="invalid evaporator temperature value";
-				}else {
-					int index=0;
-					boolean inloop=true;
-					while(inloop==true) {
-						String x=scanner.nextLine();
-						if (x.equals("liquid{")) {
-							 msg="no record found";
-							  inloop=false;
-						  }else {
-							  if(sysCapacityInKW<Double.parseDouble(x) || sysCapacityInKW==Double.parseDouble(x)) {
-								  this.tableCap=Double.parseDouble(x);
-								  inloop=false;
-								  String y="";
-								  while(!y.equals("mm{")) {
-									  y=scanner.nextLine();
-								  }
-								  y=scanner.nextLine();
-								  for(int i=0; i<index; i++) {
-									  y=scanner.nextLine();
-								  }
-								  
-								  mmsuction=Double.parseDouble(y);
-							  }
-						  }
-						index++;
+		String ref=scanner.nextLine();
+		while(!ref.equals(this.refrigerant+"{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals(evapTemp+"{") && !ref.equals("};"+this.refrigerant+" closing")) {
+			ref=scanner.nextLine();
+		};
+		
+		
+	    if(ref.equals("};"+this.refrigerant+" closing")) {
+			return "invalid evaporator temperature value";
+		}else {
+			while(!ref.equals(designTemp+"{") && !ref.equals("Pa{")) {
+				ref=scanner.nextLine();
+			}
+			if(ref.equals("Pa{")) {
+				return "invalid design temperature value";
+			}else {
+				ref=scanner.nextLine();
+				int index=0;
+				boolean inLoop=true;
+				while(!ref.equals("liquid{") && inLoop==true) {
+					ref=scanner.nextLine();
+					if(sysCapacityInKW<Double.parseDouble(ref) || sysCapacityInKW==Double.parseDouble(ref)) {
+						tableCap=Double.parseDouble(ref);
+						inLoop=false;
 					}
-					
+					index++;
+				}
+				if(ref.equals("liquid{")) {
+					return "no record found";
+				}else {
+					while(!ref.equals("mm{")) {
+						  ref=scanner.nextLine();
+					  }
+					ref=scanner.nextLine();
+					for(int i=0; i<index; i++) {
+						ref=scanner.nextLine();
+					}
+					mmsuction=Double.parseDouble(ref);
+					return "";
 				}
 			}
+			
+			
 		}
-	return msg;
+		
+		
 	}
-	String setLiquidLine(double evapTemp, double condenseTemp, double designTemp) throws FileNotFoundException {
-		String msg="";
-		File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
+	
+	public String setLiquidLine() throws FileNotFoundException {
+		
+		
 		Scanner scanner= new Scanner(table);
-		while(scanner.hasNextLine()) {
-			String s=scanner.nextLine();
-			if(s.equals(this.refrigerant+"{")) {
-				String evptmp="";
-				while(!evptmp.equals(evapTemp+"{") && !evptmp.equals("};"+this.refrigerant+" closing")) {
-					evptmp=scanner.nextLine();
+		String ref=scanner.nextLine();
+		while(!ref.equals(this.refrigerant+"{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals(evapTemp+"{") && !ref.equals("};"+this.refrigerant+" closing")) {
+			ref=scanner.nextLine();
+		}
+	    if(ref.equals("};"+this.refrigerant+" closing")) {
+			return "invalid evaporator temperature value";
+		}else {
+			while(!ref.equals("liquid{")) {
+				ref=scanner.nextLine();
+			}
+			int index=0;
+			boolean inloop=true;
+			while(!ref.equals("mm{") && inloop==true) {
+				ref=scanner.nextLine();
+				if(sysCapacityInKW<Double.parseDouble(ref)  || sysCapacityInKW<Double.parseDouble(ref)) {
+					inloop=false;
 				}
-				if(evptmp.equals("};"+this.refrigerant+" closing")) {
-					msg="invalid evaporator temperature value";
-				}else {
-					String x=scanner.nextLine();
-					while(!x.equals("liquid{")) {
-						x=scanner.nextLine();
-					}
-					int index=0;
-					boolean inloop=true;
-					while(inloop==true) {
-						x=scanner.nextLine();
-						if(sysCapacityInKW<Double.parseDouble(x)  || sysCapacityInKW<Double.parseDouble(x)) {
-							inloop=false;
-							}
-						if(x.equals("mm{")) {
-							inloop=false;
-						}
-						index++;
-					}
-					while(!x.equals("mm{")) {
-						x=scanner.nextLine();
-					}
-					for(int i=0; i<index; i++) {
-						mmliquid=Double.parseDouble(scanner.nextLine());
-					}
+				index ++;
+			}
+			if(ref.equals("mm{")) {
+				return "no value found";
+			}else {
+				while(!ref.equals("mm{") ) {
+					ref=scanner.nextLine();
 				}
+				for(int i=0; i<index; i++) {
+					ref=scanner.nextLine();
+				}
+				mmliquid=Double.parseDouble(ref);
+				return "";
 			}
 		}
 		
-	return msg;	
+		
 	}
+	
 	
 	double getSuctionLineSize() {
 		return this.mmsuction;
@@ -116,49 +134,29 @@ public class Run{
 	double getLiquidLineSize() {
 		return this.mmliquid;
 	}
-double getEquivalentLengthSuctionLine(double line) throws FileNotFoundException {
+
+	double getEquivalentLength(double line, double filterDrier) throws FileNotFoundException {
 		
 		double rad=0;
 		double length=0;
-		File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
-		Scanner scanner= new Scanner(table);
-		String s="";
-		while(!s.equals("eqv-line-for-fitting{")) {
-			s=scanner.nextLine();
-		}
-		while(!s.equals(String.valueOf(line)+"mm{")) {
-			s=scanner.nextLine();
-		}
-		s=scanner.nextLine();
-		rad=Double.parseDouble(s);
-		length=4+2+rad*2;
-		System.out.println(length);
-		return length;
 		
-	}
-	double getEquivalentLengthLiquidLine(double line) throws FileNotFoundException {
-		double filterDrier=3.45;
-		double rad=0;
-		double length=0;
-		File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
 		Scanner scanner= new Scanner(table);
-		String s="";
-		while(!s.equals("eqv-line-for-fitting{")) {
-			s=scanner.nextLine();
+		String ref="";
+		while(!ref.equals("eqv-line-for-fitting{")) {
+			ref=scanner.nextLine();
 		}
-		while(!s.equals(String.valueOf(line)+"mm{")) {
-			s=scanner.nextLine();
+		while(!ref.equals(String.valueOf(line)+"mm{")) {
+			ref=scanner.nextLine();
 		}
-		s=scanner.nextLine();
-		rad=Double.parseDouble(s);
+		ref=scanner.nextLine();
+		rad=Double.parseDouble(ref);
 		length=4+2+rad*2+filterDrier;
-		System.out.println(length);
 		return length;
 		
 	}
 	double getTempDropLiquidLine(double mm, double actualLength, double actualCapacity) throws FileNotFoundException {
 		double temp=0;
-		File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
+		
 		Scanner scanner= new Scanner(table);
 		String s="";
 		while(!s.equals(this.refrigerant+"{")) {
@@ -186,9 +184,139 @@ double getEquivalentLengthSuctionLine(double line) throws FileNotFoundException 
 	
 	double getTempDropSuctionLine(double mm, double actualLength, double actualCapacity) throws FileNotFoundException {
 		double temp=0;
-		temp=(0.04)*(actualLength/30.4878)*Math.pow((actualCapacity/this.tableCap), 1.8);
+		temp=(designTemp)*(actualLength/30.4878)*Math.pow((actualCapacity/this.tableCap), 1.8);
 		return temp;
 	}
+	double getPressureDropLiquid() throws FileNotFoundException {
+		
+		Scanner scanner=  new Scanner(table);
+		String ref="";
+		while(!ref.equals(this.refrigerant+"{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals("liquid{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals("Pa{")) {
+			ref=scanner.nextLine();
+		}
+		ref=scanner.nextLine();
+		double kPa=Double.parseDouble(ref)/1000;
+		
+		return kPa;
+	}
 	
+	public double getPressureDropFromRiser(double kpa) throws FileNotFoundException {
+		
+		Scanner scanner=  new Scanner(table);
+		String ref="";
+		while(!ref.equals(this.refrigerant+"{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals("pressure-drop{")) {
+			ref=scanner.nextLine();
+		}
+		ref=scanner.nextLine();
+		
+		return 2*Double.parseDouble(ref);
+		
+	}
 	
+	public double getPressureDropSuction() throws FileNotFoundException {
+		Scanner scanner= new Scanner(table);
+		String ref=scanner.nextLine();
+		while(!ref.equals(this.refrigerant+"{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals(evapTemp+"{") && !ref.equals("};"+this.refrigerant+" closing")) {
+			ref=scanner.nextLine();
+		};
+		while(!ref.equals(designTemp+"{") && !ref.equals("Pa{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals("Pa{")) {
+			ref=scanner.nextLine();
+		}
+		ref=scanner.nextLine();
+		
+		return Double.parseDouble(ref)/1000;
+		}
+	
+	public double getEnthalpyGas() throws FileNotFoundException {
+		   Scanner scanner= new Scanner(table);
+			String ref=scanner.nextLine();
+			while(!ref.equals(this.refrigerant+"{")) {
+				ref=scanner.nextLine();
+			}
+			while(!ref.equals("enthalpy-gas{")) {
+				ref=scanner.nextLine();
+			}
+			while(!ref.equals(evapTemp+"{")) {
+				ref=scanner.nextLine();
+			}
+		   return Double.parseDouble(ref=scanner.nextLine());
+	   }
+	public String setEnthalpyLiquid() throws FileNotFoundException {
+		   Scanner scanner= new Scanner(table);
+			String ref=scanner.nextLine();
+			while(!ref.equals(this.refrigerant+"{")) {
+				ref=scanner.nextLine();
+			}
+			while(!ref.equals("enthalpy-liquid{")) {
+				ref=scanner.nextLine();
+			}
+			while(!ref.equals(condenseTemp+"{") && !ref.equals("}")) {
+				ref=scanner.nextLine();
+			}
+			if(ref.equals("}")) {
+				return "invalid condenser temperature value";
+			}else {
+				h4= Double.parseDouble(ref=scanner.nextLine());
+				return "";
+			}
+		   
+	   }
+	
+  public double getEnthalpyLiquid() {
+	  return this.h4;
+  }
+  public double getCapacityInKW() {
+	  return this.sysCapacityInKW;
+  }
+  public double getSpecVolumeGas() throws FileNotFoundException {
+	  	Scanner scanner= new Scanner(table);
+		String ref=scanner.nextLine();
+		while(!ref.equals(this.refrigerant+"{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals("spec-volume-gas{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals(evapTemp+"{")) {
+			ref=scanner.nextLine();
+		}
+		ref=scanner.nextLine();
+		double val= Double.parseDouble(ref);
+		double area = (Math.PI/4)*Math.pow((mmsuction/1000), 2);
+		System.out.println(area);
+		return (val/area);
+}
+  public double getSpecVolumeLiquid() throws FileNotFoundException {
+	  	Scanner scanner= new Scanner(table);
+		String ref=scanner.nextLine();
+		while(!ref.equals(this.refrigerant+"{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals("spec-volume-liquid{")) {
+			ref=scanner.nextLine();
+		}
+		while(!ref.equals(condenseTemp+"{")) {
+			ref=scanner.nextLine();
+		}
+		ref=scanner.nextLine();
+		double val= Double.parseDouble(ref);
+		double area = (Math.PI/4)*Math.pow((mmliquid/1000), 2);
+		return (val/area);
+}
+
 }
