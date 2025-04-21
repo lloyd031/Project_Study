@@ -55,8 +55,8 @@ public class MainController implements Initializable{
     private PathNode start;
     private PathNode end;
     private Group flowlinea;
-    private double width=65;
-    private double height=40;
+    private double width=50;
+    private double height=24;
     private double length=70;
     private int selectedwall=2;
     private Box[] n;
@@ -73,6 +73,21 @@ public class MainController implements Initializable{
     private boolean lockperspective=false;
     private String ref="";
     private PerspectiveCamera camera;
+    private double capacity=0;
+    private double capacityinkw=0;
+    private double refeffect=0;
+    private double massflow=0;
+    private double pipesizeS=0;
+    private double tempdropS=0;
+    private double pressdropS=0;
+    private double velocityS=0;
+    private double equivlengthS=0;
+    private double pipesizeL=0;
+    private double tempdropL=0;
+    private double pressdropL=0;
+    private double equivlengthL=0;
+    private double velocityL=0;
+    private boolean running=false;
 	@FXML
     private SubScene threeDModel;
 	
@@ -87,7 +102,7 @@ public class MainController implements Initializable{
 	@FXML
 	private TitledPane acrdncomploc,acrdnaculoc;
 	@FXML
-	private Label lblcap,lblcap2,runbtn;
+	private Label lblcap,lblcap2,runbtn,lblm,lblref,btnref,output1,output2,output3,output4,btnsuctionline,btnsysout,btnliquidline;
 	@FXML
 	private ComboBox<String> cbboxref;
 	
@@ -166,97 +181,186 @@ public class MainController implements Initializable{
             this.ref = cbboxref.getValue();
         });
         runbtn.setOnMouseClicked(e->{
-        	double evapTemp=Double.parseDouble(txtevaptemp.getText());
-        	double condenseTemp=Double.parseDouble(txtcondensetemp.getText());
-        	double designTemp=Double.parseDouble(txtdesigntemp.getText());
-            System.out.println(evapTemp +" "+ condenseTemp+ " "+ designTemp );
-        	Run r=new Run((cbboxref.getValue()==null)?"R-22":this.ref,evapTemp, condenseTemp, designTemp);
-        	double cap=r.capacityIntons(this.length/10, this.width/10);
-        	lblcap.setText(String.format("%.5f",cap));
-        	lblcap2.setText(String.format("%.5f",r.capacityInKW(cap)));
-        	//double h4=r.getEnthalpyLiquid();
-            try {
-				String run=r.setSuctionLine();
-				if(run.equals("")) {
-					double suctionLineSize=r.getSuctionLineSize();
-					
-					
-					String enthalpy=r.setEnthalpyLiquid();
-					if(enthalpy.equals("")) {
-						String liquidline= r.setLiquidLine();
-						if(liquidline.equals("")) {
-							System.out.println("Liquid line ");
-							double liquidLineSize=r.getLiquidLineSize();
-							System.out.println("equivalent size for liquid line "+ liquidLineSize);
-							double liquidLineLength= r.getEquivalentLength(liquidLineSize,3.45);
-							double liquidTempDrp=r.getTempDropLiquidLine(liquidLineSize,liquidLineLength,r.capacityInKW(cap));
-							System.out.println("liquidLineLength "+liquidLineLength);
-							String scientificNotation = String.format("%.2e", liquidTempDrp);
-							String[] parts = scientificNotation.split("e");
-							String base = parts[0];
-							String exponent = parts[1].replace("+", "");
-							System.out.println("tempdrop liquid line  "+base + "x10^" + exponent);
-							double pressureDropLiquid=r.getPressureDropLiquid()*(liquidTempDrp/0.02);
-							System.out.println("pressure drop liquid line "+pressureDropLiquid);
-							double pressureFromRiser=r.getPressureDropFromRiser(pressureDropLiquid);
-							System.out.println("pressure drop from the riser "+pressureFromRiser);
-							System.out.println("total pressure drop "+ (pressureDropLiquid + pressureFromRiser));
-							
-							System.out.println();
-							System.out.println("Suction line ");
-							System.out.println("equivalent size for suction line "+ suctionLineSize);
-							double suctionLineLength= r.getEquivalentLength(suctionLineSize,0);
-							System.out.println("suctionLineLength "+suctionLineLength);
-							double suctionTempDrp=r.getTempDropSuctionLine(suctionLineSize,suctionLineLength,r.capacityInKW(cap));
-							String scientificNotation1 = String.format("%.2e", suctionTempDrp);
-							String[] parts1 = scientificNotation1.split("e");
-							String base1 = parts1[0];
-							String exponent1 = parts1[1].replace("+", "");
-							System.out.println("tempdrop suction line  "+ base1 + "x10^" + exponent1);
-							
-							double pressureDropSuction=r.getPressureDropSuction()*suctionTempDrp/designTemp;
-							System.out.println("pressure drop suction line "+pressureDropSuction);
-							double h1=r.getEnthalpyGas();
-							double h4=r.getEnthalpyLiquid();
-							System.out.println("Refrigeration effect "+ h1 + " - "+ h4 + " = "+(h1-h4));
-							double m=r.getCapacityInKW()/(h1-h4);
-							double volGas =r.getSpecVolumeGas();
-							double velocityInSuctionLine=volGas*m;
-							System.out.println("Refrigerant velocity in suction line "+ velocityInSuctionLine);
-							double volLiquid =r.getSpecVolumeLiquid();
-							double velocityInLiquidLine=volLiquid*m;
-							System.out.println("Refrigerant velocity in liquid line "+ velocityInLiquidLine);
-							/**
-							 * 
-							
-							//convert double into scientific notation
-							
-							
-							String scientificNotation1 = String.format("%.2e", suctionTempDrp);
-							String[] parts1 = scientificNotation1.split("e");
-							String base1 = parts1[0];
-							String exponent1 = parts1[1].replace("+", "");
-							System.out.println(base1 + "x10^" + exponent1);
-							 */
-							//System.out.println("temp drop for liquid line "+ liquidTempDrp);
-						}else {
-							System.out.println(liquidline);
-						}
-					}else {
-						System.out.println(enthalpy);
-					}
-					
-				}else {
-					    System.out.println(run);
-				}
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-        	//fanRotate.start();
+        	String r=run();
+        	if(r.equals("")) {
+        		this.running=true;
+        		output1.setText("Capacity");
+            	output2.setText("");
+            	output3.setText("Mass flow rate");
+            	output4.setText("Refrigerating effect");
+            	lblcap.setText(String.format("%.5f",this.capacity)+" tons");
+            	lblcap2.setText(String.format("%.5f",this.capacityinkw)+ " Kw");
+            	lblref.setText(String.format("%2f", this.refeffect )+ " KJ/kg");
+				lblm.setText(String.format("%2f", this.massflow )+ " kg/s");
+        	}else {
+        		System.out.println(r);
+        	}
         });
         
+        btnsysout.setOnMouseClicked(e->{
+        	
+        	if(this.running==true) {
+        		btnsysout.setStyle("-fx-background-color: #3c4454; ");
+        		btnsuctionline.setStyle("-fx-background-color:#2d3441 ;");
+        		btnliquidline.setStyle("-fx-background-color: #2d3441; ");
+        		btnref.setStyle("-fx-background-color:#2d3441 ;");
+        		output1.setText("Capacity");
+            	output2.setText("");
+            	output3.setText("Mass flow rate");
+            	output4.setText("Refrigerating effect");
+            	lblcap.setText(String.format("%.5f",this.capacity)+" tons");
+            	lblcap2.setText(String.format("%.5f",this.capacityinkw)+ " Kw");
+            	lblref.setText(String.format("%2f", this.refeffect )+ " KJ/kg");
+				lblm.setText(String.format("%2f", this.massflow )+ " kg/s");
+        	}
+        });
+        btnliquidline.setOnMouseClicked(e->{
+        	
+        	if(this.running==true) {
+        		btnsuctionline.setStyle("-fx-background-color: #2d3441;");
+        		btnsysout.setStyle("-fx-background-color:#2d3441;");
+        		btnliquidline.setStyle("-fx-background-color:#3c4454 ;");
+        		btnref.setStyle("-fx-background-color:#2d3441 ;");
+        		output1.setText("Pipe size");
+            	output2.setText("Temp. drop");
+            	output3.setText("Pressure drop");
+            	output4.setText("Equivalent length");
+            	lblcap.setText(String.format("%.5f",this.pipesizeL)+" mm");
+            	lblcap2.setText(String.format("%.5f",this.tempdropL)+ " C");
+            	lblref.setText(String.format("%2f", this.equivlengthL )+ " m");
+				lblm.setText(String.format("%2f",  this.pressdropL)+ " kPa");
+        	}
+        });
+        btnsuctionline.setOnMouseClicked(e->{
+        	
+        	if(this.running==true) {
+        		btnsuctionline.setStyle("-fx-background-color:#3c4454 ;");
+        		btnsysout.setStyle("-fx-background-color: #2d3441;");
+        		btnliquidline.setStyle("-fx-background-color:#2d3441;");
+        		btnref.setStyle("-fx-background-color:#2d3441 ;");
+        		output1.setText("Pipe size");
+            	output2.setText("Temp. drop");
+            	output3.setText("Pressure drop");
+            	output4.setText("Equivalent length");
+            	lblcap.setText(String.format("%.5f",this.pipesizeS)+" mm");
+            	lblcap2.setText(String.format("%.5f",this.tempdropS)+ " C");
+            	lblref.setText(String.format("%2f", this.equivlengthS )+ " m");
+				lblm.setText(String.format("%2f",  this.pressdropS)+ " kPa");
+        	}
+        });
         
+        btnref.setOnMouseClicked(e->{
+        	
+        	if(this.running==true) {
+        		btnsuctionline.setStyle("-fx-background-color: #2d3441;");
+        		btnsysout.setStyle("-fx-background-color: #2d3441;");
+        		btnliquidline.setStyle("-fx-background-color:#2d3441 ;");
+        		btnref.setStyle("-fx-background-color:#3c4454 ;");
+        		output1.setText("Type ");
+            	output2.setText("");
+            	output3.setText("Velocity in suction line");
+            	output4.setText("Velocity in liquid line");
+            	lblcap.setText((this.ref.equals(""))?"R-22":this.ref);
+            	lblcap2.setText("");
+            	lblref.setText(String.format("%2f", this.velocityL )+ " m/s");
+				lblm.setText(String.format("%2f",  this.velocityS)+ " m/s");
+        	}
+        });
+        
+    }
+    private String run() {
+    	double evapTemp=Double.parseDouble(txtevaptemp.getText());
+    	double condenseTemp=Double.parseDouble(txtcondensetemp.getText());
+    	double designTemp=Double.parseDouble(txtdesigntemp.getText());
+        System.out.println(evapTemp +" "+ condenseTemp+ " "+ designTemp );
+    	Run r=new Run((cbboxref.getValue()==null)?"R-22":this.ref,evapTemp, condenseTemp, designTemp);
+    	this.capacity=r.capacityIntons(this.length/10, this.width/10);
+    	this.capacityinkw=r.capacityInKW(this.capacity);
+    	
+    	//double h4=r.getEnthalpyLiquid();
+        try {
+			String run=r.setSuctionLine();
+			if(run.equals("")) {
+				this.pipesizeS=r.getSuctionLineSize();
+				String enthalpy=r.setEnthalpyLiquid();
+				if(enthalpy.equals("")) {
+					String liquidline= r.setLiquidLine();
+					if(liquidline.equals("")) {
+						System.out.println("Liquid line ");
+						this.pipesizeL=r.getLiquidLineSize();
+						System.out.println("equivalent size for liquid line "+ this.pipesizeL);
+						this.equivlengthL= r.getEquivalentLength(this.pipesizeL,3.45);
+						this.tempdropL=r.getTempDropLiquidLine(this.pipesizeL,this.equivlengthL,this.capacityinkw);
+						System.out.println("liquidLineLength "+this.equivlengthL);
+						String scientificNotation = String.format("%.2e", this.tempdropL);
+						String[] parts = scientificNotation.split("e");
+						String base = parts[0];
+						String exponent = parts[1].replace("+", "");
+						System.out.println("tempdrop liquid line  "+base + "x10^" + exponent);
+						this.pressdropL=r.getPressureDropLiquid()*(this.tempdropL/0.02);
+						System.out.println("pressure drop liquid line "+this.pressdropL);
+						double pressureFromRiser=r.getPressureDropFromRiser(this.pressdropL);
+						System.out.println("pressure drop from the riser "+pressureFromRiser);
+						System.out.println("total pressure drop "+ (this.pressdropL + pressureFromRiser));
+						
+						System.out.println();
+						System.out.println("Suction line ");
+						
+						System.out.println("equivalent size for suction line "+ this.pipesizeS);
+						this.equivlengthS= r.getEquivalentLength(this.pipesizeS,0);
+						System.out.println("suctionLineLength "+this.equivlengthS);
+						
+					    
+						this.tempdropS=r.getTempDropSuctionLine(this.pipesizeS,this.equivlengthS,this.capacityinkw);
+						String scientificNotation1 = String.format("%.2e", this.tempdropS);
+						String[] parts1 = scientificNotation1.split("e");
+						String base1 = parts1[0];
+						String exponent1 = parts1[1].replace("+", "");
+						System.out.println("tempdrop suction line  "+ base1 + "x10^" + exponent1);
+						
+						this.pressdropS=r.getPressureDropSuction()*this.tempdropS/designTemp;
+						System.out.println("pressure drop suction line "+this.pressdropS);
+						double h1=r.getEnthalpyGas();
+						double h4=r.getEnthalpyLiquid();
+						this.refeffect=h1-h4;
+						System.out.println("Refrigeration effect "+ h1 + " - "+ h4 + " = "+this.refeffect);
+						this.massflow=r.getCapacityInKW()/this.refeffect;
+						double volGas =r.getSpecVolumeGas();
+						this.velocityS=volGas*this.massflow;
+						System.out.println("Refrigerant velocity in suction line "+ this.velocityS);
+						double volLiquid =r.getSpecVolumeLiquid();
+						this.velocityL=volLiquid*this.massflow;
+						System.out.println("Refrigerant velocity in liquid line "+ this.velocityL);
+						
+						/**
+						 * 
+						
+						//convert double into scientific notation
+						
+						
+						String scientificNotation1 = String.format("%.2e", suctionTempDrp);
+						String[] parts1 = scientificNotation1.split("e");
+						String base1 = parts1[0];
+						String exponent1 = parts1[1].replace("+", "");
+						System.out.println(base1 + "x10^" + exponent1);
+						 */
+						//System.out.println("temp drop for liquid line "+ liquidTempDrp);
+					}else {
+						return liquidline;
+					}
+				}else {
+					return enthalpy;
+				}
+				
+			}else {
+				    return run;
+			}
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	//fanRotate.start();
+       return "";
     }
     private void initPerspective(Camera cam,Group g) {
     	cam.setRotationAxis(Rotate.X_AXIS);
@@ -272,7 +376,8 @@ public class MainController implements Initializable{
 					g.translateZProperty().set(g.getTranslateZ()-ggap);
 					cam.translateYProperty().set(cam.getTranslateY()-gap);
 					cam.setRotate(cam.getRotate()-4.5);
-					if(cam.getTranslateY()>=-200 && cam.getRotate()<=-45) {
+					if(cam.getRotate()<=-45) {
+				 		camera.translateYProperty().set(-200);
 		    			this.stop();
 		    		}
 				}

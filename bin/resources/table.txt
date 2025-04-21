@@ -30,16 +30,6 @@ suction{
 Pa{
 572
 }
-enthalpy-gas{
--5.0{
-403.16
-}
-}
-enthalpy-liquid{
-40.0{
-249.65
-}
-}
 }
 }
 5.0{
@@ -92,6 +82,26 @@ temp-drp-liquidln{
 }
 pressure-drop{
 11.31
+}
+enthalpy-gas{
+-5.0{
+403.16
+}
+}
+enthalpy-liquid{
+40.0{
+249.65
+}
+}
+spec-volume-gas{
+-5.0{
+0.055291
+}
+}
+spec-volume-liquid{
+40.0{
+0.00088611
+}
 }
 };R-22 closing
 

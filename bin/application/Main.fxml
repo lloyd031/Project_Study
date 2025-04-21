@@ -169,7 +169,7 @@
                                                             <Font size="12.5" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtwidth" focusTraversable="false" prefWidth="60.0" promptText="Enter width" text="6.5">
+                                                      <TextField fx:id="txtwidth" focusTraversable="false" prefWidth="60.0" promptText="Enter width" text="5">
                                                          <font>
                                                             <Font size="13.0" />
                                                          </font>
@@ -184,7 +184,7 @@
                                                             <Font size="12.5" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtheight" focusTraversable="false" prefWidth="60.0" promptText="Enter height" text="4">
+                                                      <TextField fx:id="txtheight" focusTraversable="false" prefWidth="60.0" promptText="Enter height" text="2.4">
                                                          <font>
                                                             <Font size="13.0" />
                                                          </font>
@@ -487,7 +487,7 @@
                               </Label>
                               <HBox alignment="CENTER_LEFT" prefHeight="20.0" prefWidth="117.0" spacing="5.0" style="-fx-background-color: #3c465500;">
                                  <children>
-                                    <TextField fx:id="txtevaptemp" focusTraversable="false" prefHeight="29.0" prefWidth="94.0" text="0">
+                                    <TextField fx:id="txtevaptemp" focusTraversable="false" prefHeight="29.0" prefWidth="94.0" text="-5">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -502,7 +502,7 @@
                               </Label>
                               <HBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: #3c465500;">
                                  <children>
-                                    <TextField fx:id="txtcondensetemp" focusTraversable="false" prefHeight="29.0" prefWidth="93.0" text="0">
+                                    <TextField fx:id="txtcondensetemp" focusTraversable="false" prefHeight="29.0" prefWidth="93.0" text="40">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -518,7 +518,7 @@
                               <HBox />
                               <HBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: #3c465500;">
                                  <children>
-                                    <TextField fx:id="txtdesigntemp" focusTraversable="false" prefHeight="29.0" prefWidth="90.0" text="0">
+                                    <TextField fx:id="txtdesigntemp" focusTraversable="false" prefHeight="29.0" prefWidth="90.0" text="0.04">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -546,53 +546,53 @@
          <children>
             <HBox spacing="2.5">
                <children>
-                  <Label style="-fx-background-color: #2d3441;" text="System output" textFill="WHITE">
+                  <Label fx:id="btnsysout" style="-fx-background-color: #3c4454;" text="System output" textFill="WHITE">
                      <padding>
                         <Insets bottom="2.0" left="8.0" right="20.0" top="2.0" />
                      </padding>
                   </Label>
-                  <Label style="-fx-background-color: #3c4454;" text="Suction line" textFill="WHITE">
+                  <Label fx:id="btnsuctionline" style="-fx-background-color: #2d3441;" text="Suction line" textFill="WHITE">
                      <padding>
                         <Insets bottom="2.0" left="8.0" right="20.0" top="2.0" />
                      </padding>
                   </Label>
-                  <Label style="-fx-background-color: #3c4454;" text="Liquid line" textFill="WHITE">
+                  <Label fx:id="btnliquidline" style="-fx-background-color: #2d3441;" text="Liquid line" textFill="WHITE">
+                     <padding>
+                        <Insets bottom="2.0" left="8.0" right="20.0" top="2.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="btnref" style="-fx-background-color: #2d3441;" text="Refrigerant" textFill="WHITE">
                      <padding>
                         <Insets bottom="2.0" left="8.0" right="20.0" top="2.0" />
                      </padding>
                   </Label>
                   <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                  <Label style="-fx-background-color: #2d3441;" text="00:00" textFill="WHITE">
+                  <Label style="-fx-background-color: #3c4454;" text="00:00" textFill="WHITE">
                      <padding>
                         <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
                      </padding>
                   </Label>
                </children>
             </HBox>
-            <VBox prefHeight="100.0" style="-fx-background-color: #2d3441;">
+            <VBox prefHeight="100.0" style="-fx-background-color: #3c4454;">
                <children>
                   <HBox alignment="CENTER">
                      <children>
-                        <Label text="Capacity" textFill="WHITE">
+                        <Label fx:id="output1" text="Capacity" textFill="WHITE">
                            <padding>
                               <Insets left="8.0" right="8.0" />
                            </padding>
                         </Label>
                         <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblcap" text="--" textFill="#00d300">
+                        <Label fx:id="lblcap" text="--" textFill="WHITE">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
                            <font>
-                              <Font name="System Bold" size="14.0" />
+                              <Font size="14.0" />
                            </font>
                            <padding>
-                              <Insets left="8.0" right="3.0" />
-                           </padding>
-                        </Label>
-                        <Label text="tons of refrigeration" textFill="WHITE">
-                           <padding>
-                              <Insets left="8.0" right="8.0" />
+                              <Insets left="8.0" right="11.0" />
                            </padding>
                         </Label>
                      </children>
@@ -602,63 +602,63 @@
                   </HBox>
                   <HBox alignment="CENTER">
                      <children>
+                        <Label fx:id="output2" prefHeight="17.0" prefWidth="122.0" textFill="WHITE">
+                           <padding>
+                              <Insets left="8.0" />
+                           </padding>
+                        </Label>
                         <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblcap2" text="--" textFill="#00d300">
+                        <Label fx:id="lblcap2" text="--" textFill="WHITE">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
                            <font>
-                              <Font name="System Bold" size="14.0" />
+                              <Font size="14.0" />
                            </font>
                            <padding>
                               <Insets left="8.0" right="11.0" />
                            </padding>
                         </Label>
-                        <Label text="kW of refrigeration" textFill="WHITE">
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Label fx:id="output3" text="Mass flow rate" textFill="WHITE">
                            <padding>
-                              <Insets right="14.0" />
+                              <Insets left="8.0" right="8.0" />
+                           </padding>
+                        </Label>
+                        <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lblm" text="--" textFill="WHITE">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="8.0" left="8.0" right="11.0" />
                            </padding>
                         </Label>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER">
                      <children>
-                        <Label text="Mass flow rate" textFill="WHITE">
+                        <Label fx:id="output4" text="Refrigerating effect" textFill="WHITE">
                            <padding>
                               <Insets left="8.0" right="8.0" />
                            </padding>
                         </Label>
                         <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                        <Label text="--" textFill="#00d300">
+                        <Label fx:id="lblref" text="--" textFill="WHITE">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
                            <font>
-                              <Font name="System Bold" size="14.0" />
+                              <Font size="14.0" />
                            </font>
                            <padding>
-                              <Insets bottom="8.0" left="8.0" right="8.0" />
-                           </padding>
-                        </Label>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER">
-                     <children>
-                        <Label text="Refrigerating effect" textFill="WHITE">
-                           <padding>
-                              <Insets left="8.0" right="8.0" />
-                           </padding>
-                        </Label>
-                        <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblcap1" text="--" textFill="#00d300">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets bottom="8.0" left="8.0" right="8.0" />
+                              <Insets bottom="8.0" left="8.0" right="11.0" />
                            </padding>
                         </Label>
                      </children>
