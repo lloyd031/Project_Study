@@ -1,6 +1,12 @@
 package application;
 
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
@@ -20,6 +26,7 @@ import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -32,6 +39,8 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 
 
@@ -93,16 +102,18 @@ public class MainController implements Initializable{
 	
 	@FXML 
     private BorderPane borderPane;
+	@FXML
+	private MenuItem btnsave,btnopen;
 	@FXML 
     private TextField txtlength,txtwidth,txtheight,txtacul,txtacut,txtacur,txtacub,txtcompl,txtcompw,txtcompd,txtcompt,txtcompr,txtcomph,txtcompb;
 	@FXML 
-    private TextField txtevapw,txtevaph,txtevapd,txtdesigntemp,txtevaptemp,txtcondensetemp;
+    private TextField txtevapw,txtevaph,txtevapd,txtdesigntemp,txtevaptemp,txtcondensetemp,lblcap,lblcap2,lblm,lblref;
 	@FXML
     private Button btndim,btnevap,btncomp;
 	@FXML
 	private TitledPane acrdncomploc,acrdnaculoc;
 	@FXML
-	private Label lblcap,lblcap2,runbtn,lblm,lblref,btnref,output1,output2,output3,output4,btnsuctionline,btnsysout,btnliquidline;
+	private Label btnref,runbtn,output1,output2,output3,output4,btnsuctionline,btnsysout,btnliquidline;
 	@FXML
 	private ComboBox<String> cbboxref;
 	
@@ -147,13 +158,7 @@ public class MainController implements Initializable{
         setCompLoc();
         drawPipe();
     	btndim.setOnMouseClicked(event -> {
-    		width=Double.parseDouble(txtwidth.getText())*10;
-    		length=Double.parseDouble(txtlength.getText())*10;
-    		height=Double.parseDouble(txtheight.getText())*10;
-    		root3D.getChildren().clear();
-    		loadModel(root3D);
-    		initializeLocationAcu();
-    		initAcuDragged();
+    		renderRoom();
     	});
     	
     	cbboxwall.setOnAction(event -> {
@@ -173,7 +178,6 @@ public class MainController implements Initializable{
     	acrdnaculoc.setOnMouseClicked(e->{
     		selectedcomp=0;
     	});
-    
         
     	initKeyPressed(root3D);
         cbboxref.setOnAction(event -> {
@@ -206,6 +210,7 @@ public class MainController implements Initializable{
         		btnref.setStyle("-fx-background-color:#2d3441 ;");
         		output1.setText("Capacity");
             	output2.setText("");
+            	lblcap2.setVisible(true);
             	output3.setText("Mass flow rate");
             	output4.setText("Refrigerating effect");
             	lblcap.setText(String.format("%.5f",this.capacity)+" tons");
@@ -224,12 +229,79 @@ public class MainController implements Initializable{
         		output1.setText("Pipe size");
             	output2.setText("Temp. drop");
             	output3.setText("Pressure drop");
+            	lblcap2.setVisible(true);
             	output4.setText("Equivalent length");
             	lblcap.setText(String.format("%.5f",this.pipesizeL)+" mm");
             	lblcap2.setText(String.format("%.5f",this.tempdropL)+ " C");
             	lblref.setText(String.format("%2f", this.equivlengthL )+ " m");
 				lblm.setText(String.format("%2f",  this.pressdropL)+ " kPa");
         	}
+        });
+        btnsave.setOnAction(e -> {
+        	saveAs();
+        });
+        
+        btnopen.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Text File");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+
+            Stage stage = (Stage) txtacul.getScene().getWindow();  // or any other node
+            File file = fileChooser.showOpenDialog(stage);
+
+            if (file != null) {
+                try {
+                    List<String> lines = java.nio.file.Files.readAllLines(file.toPath());
+
+                    // You can now assign the lines to variables or text fields
+                    if (lines.size() >= 16) {
+                    	this.length=Double.parseDouble(lines.get(0))*10;
+                    	this.width=Double.parseDouble(lines.get(1))*10;
+                    	this.height=Double.parseDouble(lines.get(2))*10;
+                    	txtlength.setText(lines.get(0));
+                    	txtwidth.setText(lines.get(1));
+                    	txtheight.setText(lines.get(2));
+                    	renderRoom();
+                    	cbboxref.setValue(lines.get(3));
+                    	this.ref=lines.get(3);
+                    	this.selectedwall=Integer.parseInt(lines.get(4));
+                    	int wall=+Integer.parseInt(lines.get(4))+1;
+                    	cbboxwall.setValue("Wall-"+wall);
+                    	txtacul.setText(lines.get(5));
+                    	txtacur.setText(lines.get(6));
+                    	txtacut.setText(lines.get(7));
+                    	txtacub.setText(lines.get(8));
+                    	txtcompl.setText(lines.get(9));
+                    	txtcompr.setText(lines.get(10));
+                    	txtcompt.setText(lines.get(11));
+                    	txtacub.setText(lines.get(12));
+                    	acuX.set(Double.parseDouble(lines.get(13)));
+                    	acuY.set(Double.parseDouble(lines.get(14)));
+                    	compX.set(Double.parseDouble(lines.get(15)));
+                    	compY.set(Double.parseDouble(lines.get(16)));
+                    	if(this.selectedwall==2 || this.selectedwall ==3) {
+                    		
+                			acu.translateXProperty().bind(acuX);
+                			cmp.translateXProperty().bind(compX);
+                			
+                		}else {
+	                		acu.translateZProperty().bind(acuX);
+	                		cmp.translateZProperty().bind(compX);
+	                	}
+                    	acu.translateYProperty().bind(acuY);
+                    	cmp.translateYProperty().bind(compY);
+                    	drawPipe();
+                    	txtevaptemp.setText(lines.get(17));
+                    	txtcondensetemp.setText(lines.get(18));
+                    	txtdesigntemp.setText(lines.get(19));
+                    	
+                    } else {
+                        System.out.println("File does not contain enough lines.");
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
         });
         btnsuctionline.setOnMouseClicked(e->{
         	
@@ -242,6 +314,7 @@ public class MainController implements Initializable{
             	output2.setText("Temp. drop");
             	output3.setText("Pressure drop");
             	output4.setText("Equivalent length");
+            	lblcap2.setVisible(true);
             	lblcap.setText(String.format("%.5f",this.pipesizeS)+" mm");
             	lblcap2.setText(String.format("%.5f",this.tempdropS)+ " C");
             	lblref.setText(String.format("%2f", this.equivlengthS )+ " m");
@@ -261,6 +334,7 @@ public class MainController implements Initializable{
             	output3.setText("Velocity in suction line");
             	output4.setText("Velocity in liquid line");
             	lblcap.setText((this.ref.equals(""))?"R-22":this.ref);
+            	lblcap2.setVisible(false);
             	lblcap2.setText("");
             	lblref.setText(String.format("%2f", this.velocityL )+ " m/s");
 				lblm.setText(String.format("%2f",  this.velocityS)+ " m/s");
@@ -268,6 +342,52 @@ public class MainController implements Initializable{
         });
         
     }
+    public void saveAs() {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Text File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        Stage stage = (Stage) txtlength.getScene().getWindow();
+
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            	writer.write(this.length/10 + "\n");
+            	writer.write(this.width/10 + "\n");
+            	writer.write(this.height/10 + "\n");
+            	writer.write(((this.ref.equals(""))?"R-22":this.ref) + "\n");
+            	writer.write(this.selectedwall + "\n");
+            	writer.write(txtacul.getText() + "\n");
+            	writer.write( txtacur.getText() + "\n");;
+            	writer.write( txtacut.getText() + "\n");
+            	writer.write(txtacub.getText() + "\n");
+            	writer.write(txtcompl.getText() + "\n");
+            	writer.write(txtcompr.getText() + "\n");
+            	writer.write(txtcompt.getText() + "\n");
+            	writer.write(txtcompb.getText() + "\n");
+            	writer.write(acuX.doubleValue() + "\n");
+            	writer.write(acuY.doubleValue() + "\n");
+            	writer.write(compX.doubleValue() + "\n");
+            	writer.write(compY.doubleValue() + "\n");
+            	writer.write(txtevaptemp.getText() + "\n");
+            	writer.write(txtcondensetemp.getText() + "\n");
+            	writer.write(txtdesigntemp.getText() + "\n");
+                System.out.println("Data saved to: " + file.getAbsolutePath());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    
+    }
+    public void renderRoom() {
+		width=Double.parseDouble(txtwidth.getText())*10;
+		length=Double.parseDouble(txtlength.getText())*10;
+		height=Double.parseDouble(txtheight.getText())*10;
+		root3D.getChildren().clear();
+		loadModel(root3D);
+		initializeLocationAcu();
+		initAcuDragged();
+	}
     private String run() {
     	double evapTemp=Double.parseDouble(txtevaptemp.getText());
     	double condenseTemp=Double.parseDouble(txtcondensetemp.getText());
@@ -297,12 +417,13 @@ public class MainController implements Initializable{
 						String base = parts[0];
 						String exponent = parts[1].replace("+", "");
 						System.out.println("tempdrop liquid line  "+base + "x10^" + exponent);
-						this.pressdropL=r.getPressureDropLiquid()*(this.tempdropL/0.02);
-						System.out.println("pressure drop liquid line "+this.pressdropL);
-						double pressureFromRiser=r.getPressureDropFromRiser(this.pressdropL);
-						System.out.println("pressure drop from the riser "+pressureFromRiser);
-						System.out.println("total pressure drop "+ (this.pressdropL + pressureFromRiser));
+						double pressdropLa=r.getPressureDropLiquid()*(this.tempdropL/0.02);
 						
+						System.out.println("pressure drop liquid line "+pressdropLa);
+						double pressureFromRiser=r.getPressureDropFromRiser(pressdropLa);
+						System.out.println("pressure drop from the riser "+pressureFromRiser);
+						System.out.println("total pressure drop "+ (pressdropLa + pressureFromRiser));
+						this.pressdropL=(pressdropLa + pressureFromRiser);
 						System.out.println();
 						System.out.println("Suction line ");
 						

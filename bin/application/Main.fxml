@@ -42,8 +42,8 @@
                 <Menu mnemonicParsing="false" style="-fx-font-color: white;" text="File">
                      <items>
                         <MenuItem mnemonicParsing="false" text="New" />
-                        <MenuItem mnemonicParsing="false" text="Open..." />
-                        <MenuItem mnemonicParsing="false" text="Save" />
+                        <MenuItem fx:id="btnopen" mnemonicParsing="false" text="Open..." />
+                        <MenuItem fx:id="btnsave" mnemonicParsing="false" text="Save" />
                         <MenuItem mnemonicParsing="false" text="Save As..." />
                         <MenuItem mnemonicParsing="false" text="Exit" />
                      </items>
@@ -584,17 +584,11 @@
                            </padding>
                         </Label>
                         <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblcap" text="--" textFill="WHITE">
+                        <TextField fx:id="lblcap" alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="151.0">
                            <HBox.margin>
-                              <Insets />
+                              <Insets bottom="2.0" right="2.0" top="2.0" />
                            </HBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets left="8.0" right="11.0" />
-                           </padding>
-                        </Label>
+                        </TextField>
                      </children>
                      <VBox.margin>
                         <Insets />
@@ -608,17 +602,11 @@
                            </padding>
                         </Label>
                         <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblcap2" text="--" textFill="WHITE">
+                        <TextField fx:id="lblcap2" alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="151.0">
                            <HBox.margin>
-                              <Insets />
+                              <Insets bottom="2.0" right="2.0" />
                            </HBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets left="8.0" right="11.0" />
-                           </padding>
-                        </Label>
+                        </TextField>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER">
@@ -629,17 +617,11 @@
                            </padding>
                         </Label>
                         <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblm" text="--" textFill="WHITE">
+                        <TextField fx:id="lblm" alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="151.0">
                            <HBox.margin>
-                              <Insets />
+                              <Insets bottom="2.0" right="2.0" />
                            </HBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets bottom="8.0" left="8.0" right="11.0" />
-                           </padding>
-                        </Label>
+                        </TextField>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER">
@@ -650,17 +632,11 @@
                            </padding>
                         </Label>
                         <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblref" text="--" textFill="WHITE">
+                        <TextField fx:id="lblref" alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="151.0">
                            <HBox.margin>
-                              <Insets />
+                              <Insets bottom="2.0" right="2.0" />
                            </HBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets bottom="8.0" left="8.0" right="11.0" />
-                           </padding>
-                        </Label>
+                        </TextField>
                      </children>
                   </HBox>
                </children>
