@@ -15,7 +15,9 @@ public class Run{
 	private double condenseTemp=0;
 	private double designTemp=0;
 	private double h4=0;
-	File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
+	File table = new File("src/resources/table.txt");
+	//File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
+	File saturationtable = new File("src/resources/saturationtable.txt");
 	public Run(String ref, double evapTemp, double condenseTemp, double designTemp) {
 		this.refrigerant=ref;
 		this.condenseTemp=condenseTemp;
@@ -39,9 +41,10 @@ public String setSuctionLine() throws FileNotFoundException {
 			ref=scanner.nextLine();
 		}
 		while(!ref.equals(evapTemp+"{") && !ref.equals("};"+this.refrigerant+" closing")) {
+			
 			ref=scanner.nextLine();
 		};
-		
+		System.out.println(evapTemp+"");
 		
 	    if(ref.equals("};"+this.refrigerant+" closing")) {
 			return "invalid evaporator temperature value";
@@ -243,35 +246,33 @@ public String setSuctionLine() throws FileNotFoundException {
 		}
 	
 	public double getEnthalpyGas() throws FileNotFoundException {
-		   Scanner scanner= new Scanner(table);
+			Scanner scanner= new Scanner(saturationtable);
 			String ref=scanner.nextLine();
-			while(!ref.equals(this.refrigerant+"{")) {
+			while(!ref.equals(this.refrigerant)) {
 				ref=scanner.nextLine();
 			}
-			while(!ref.equals("enthalpy-gas{")) {
+			while(!ref.equals(evapTemp+"")) {
 				ref=scanner.nextLine();
 			}
-			while(!ref.equals(evapTemp+"{")) {
-				ref=scanner.nextLine();
-			}
-		   return Double.parseDouble(ref=scanner.nextLine());
+			ref=scanner.nextLine();
+			String[] values = ref.split(",");
+		    return Double.parseDouble(values[3]);
 	   }
 	public String setEnthalpyLiquid() throws FileNotFoundException {
-		   Scanner scanner= new Scanner(table);
+		   Scanner scanner= new Scanner(saturationtable);
 			String ref=scanner.nextLine();
-			while(!ref.equals(this.refrigerant+"{")) {
+			while(!ref.equals(this.refrigerant)) {
 				ref=scanner.nextLine();
 			}
-			while(!ref.equals("enthalpy-liquid{")) {
+			while(!ref.equals(condenseTemp+"") && !ref.equals("/"+this.refrigerant)) {
 				ref=scanner.nextLine();
 			}
-			while(!ref.equals(condenseTemp+"{") && !ref.equals("}")) {
-				ref=scanner.nextLine();
-			}
-			if(ref.equals("}")) {
+			if(ref.equals("/"+this.refrigerant)) {
 				return "invalid condenser temperature value";
 			}else {
-				h4= Double.parseDouble(ref=scanner.nextLine());
+				ref=scanner.nextLine();
+				String[] values = ref.split(",");
+				h4= Double.parseDouble(values[2]);
 				return "";
 			}
 		   
@@ -284,39 +285,36 @@ public String setSuctionLine() throws FileNotFoundException {
 	  return this.sysCapacityInKW;
   }
   public double getSpecVolumeGas() throws FileNotFoundException {
-	  	Scanner scanner= new Scanner(table);
+	  Scanner scanner= new Scanner(saturationtable);
 		String ref=scanner.nextLine();
-		while(!ref.equals(this.refrigerant+"{")) {
+		while(!ref.equals(this.refrigerant)) {
 			ref=scanner.nextLine();
 		}
-		while(!ref.equals("spec-volume-gas{")) {
-			ref=scanner.nextLine();
-		}
-		while(!ref.equals(evapTemp+"{")) {
+		while(!ref.equals(evapTemp+"")) {
 			ref=scanner.nextLine();
 		}
 		ref=scanner.nextLine();
-		double val= Double.parseDouble(ref);
+		String[] values = ref.split(",");
+		double val= Double.parseDouble(values[1]);
 		double area = (Math.PI/4)*Math.pow((mmsuction/1000), 2);
 		System.out.println(area);
 		return (val/area);
 }
   public double getSpecVolumeLiquid() throws FileNotFoundException {
-	  	Scanner scanner= new Scanner(table);
+	   Scanner scanner= new Scanner(saturationtable);
 		String ref=scanner.nextLine();
-		while(!ref.equals(this.refrigerant+"{")) {
+		while(!ref.equals(this.refrigerant)) {
 			ref=scanner.nextLine();
 		}
-		while(!ref.equals("spec-volume-liquid{")) {
-			ref=scanner.nextLine();
-		}
-		while(!ref.equals(condenseTemp+"{")) {
+		while(!ref.equals(condenseTemp+"")) {
 			ref=scanner.nextLine();
 		}
 		ref=scanner.nextLine();
-		double val= Double.parseDouble(ref);
+		String[] values = ref.split(",");
+		double val= Double.parseDouble(values[0]);
 		double area = (Math.PI/4)*Math.pow((mmliquid/1000), 2);
 		return (val/area);
 }
+   
 
 }

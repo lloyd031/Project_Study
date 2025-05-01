@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
+import javax.swing.JOptionPane;
+
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -53,6 +55,7 @@ public class MainController implements Initializable{
 	private double prevPointXZ=0;
 	private double tempX=0;
 	private double tempY=0;
+	private boolean err=false;
 	private double roomHieght=20;
 	private final DoubleProperty angleX=new SimpleDoubleProperty(0);
 	private final DoubleProperty angleY=new SimpleDoubleProperty(45);
@@ -185,9 +188,10 @@ public class MainController implements Initializable{
             this.ref = cbboxref.getValue();
         });
         runbtn.setOnMouseClicked(e->{
+        	this.running=false;
         	String r=run();
         	if(r.equals("")) {
-        		this.running=true;
+        		
         		output1.setText("Capacity");
             	output2.setText("");
             	output3.setText("Mass flow rate");
@@ -428,30 +432,38 @@ public class MainController implements Initializable{
 						System.out.println("Suction line ");
 						
 						System.out.println("equivalent size for suction line "+ this.pipesizeS);
-						this.equivlengthS= r.getEquivalentLength(this.pipesizeS,0);
-						System.out.println("suctionLineLength "+this.equivlengthS);
 						
-					    
-						this.tempdropS=r.getTempDropSuctionLine(this.pipesizeS,this.equivlengthS,this.capacityinkw);
-						String scientificNotation1 = String.format("%.2e", this.tempdropS);
-						String[] parts1 = scientificNotation1.split("e");
-						String base1 = parts1[0];
-						String exponent1 = parts1[1].replace("+", "");
-						System.out.println("tempdrop suction line  "+ base1 + "x10^" + exponent1);
+							try {
+								this.equivlengthS= r.getEquivalentLength(this.pipesizeS,0);
+							}catch(Exception e) {
+								JOptionPane.showMessageDialog(null, "No Equivalent length for fitting","Error "+this.pipesizeS+" mm",JOptionPane.ERROR_MESSAGE);
+								return "";
+							}
+								System.out.println("suctionLineLength "+this.equivlengthS);
+								this.tempdropS=r.getTempDropSuctionLine(this.pipesizeS,this.equivlengthS,this.capacityinkw);
+								String scientificNotation1 = String.format("%.2e", this.tempdropS);
+								String[] parts1 = scientificNotation1.split("e");
+								String base1 = parts1[0];
+								String exponent1 = parts1[1].replace("+", "");
+								System.out.println("tempdrop suction line  "+ base1 + "x10^" + exponent1);
+								
+								this.pressdropS=r.getPressureDropSuction()*this.tempdropS/designTemp;
+								System.out.println("pressure drop suction line "+this.pressdropS);
+								double h1=r.getEnthalpyGas();
+								double h4=r.getEnthalpyLiquid();
+								this.refeffect=h1-h4;
+								System.out.println("Refrigeration effect "+ h1 + " - "+ h4 + " = "+this.refeffect);
+								this.massflow=r.getCapacityInKW()/this.refeffect;
+								double volGas =r.getSpecVolumeGas();
+								this.velocityS=volGas*this.massflow;
+								System.out.println("Refrigerant velocity in suction line "+ this.velocityS);
+								double volLiquid =r.getSpecVolumeLiquid();
+								this.velocityL=volLiquid*this.massflow;
+								System.out.println("Refrigerant velocity in liquid line "+ this.velocityL);
+								this.running=true;
+							
 						
-						this.pressdropS=r.getPressureDropSuction()*this.tempdropS/designTemp;
-						System.out.println("pressure drop suction line "+this.pressdropS);
-						double h1=r.getEnthalpyGas();
-						double h4=r.getEnthalpyLiquid();
-						this.refeffect=h1-h4;
-						System.out.println("Refrigeration effect "+ h1 + " - "+ h4 + " = "+this.refeffect);
-						this.massflow=r.getCapacityInKW()/this.refeffect;
-						double volGas =r.getSpecVolumeGas();
-						this.velocityS=volGas*this.massflow;
-						System.out.println("Refrigerant velocity in suction line "+ this.velocityS);
-						double volLiquid =r.getSpecVolumeLiquid();
-						this.velocityL=volLiquid*this.massflow;
-						System.out.println("Refrigerant velocity in liquid line "+ this.velocityL);
+						
 						
 						/**
 						 * 
@@ -470,11 +482,16 @@ public class MainController implements Initializable{
 						return liquidline;
 					}
 				}else {
+					setDefault();
+					this.running=false;
+					JOptionPane.showMessageDialog(null, enthalpy,"Error",JOptionPane.ERROR_MESSAGE);
 					return enthalpy;
 				}
 				
 			}else {
-				    return run;
+				setDefault();
+				JOptionPane.showMessageDialog(null, run,"Error",JOptionPane.ERROR_MESSAGE);
+				return run;
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -482,6 +499,21 @@ public class MainController implements Initializable{
 		}
     	//fanRotate.start();
        return "";
+    }
+    public void setDefault() {
+    	btnsysout.setStyle("-fx-background-color: #3c4454; ");
+		btnsuctionline.setStyle("-fx-background-color:#2d3441 ;");
+		btnliquidline.setStyle("-fx-background-color: #2d3441; ");
+		btnref.setStyle("-fx-background-color:#2d3441 ;");
+		output1.setText("Capacity");
+    	output2.setText("");
+    	lblcap2.setVisible(true);
+    	output3.setText("Mass flow rate");
+    	output4.setText("Refrigerating effect");
+    	lblcap.setText("");
+    	lblcap2.setText("");
+    	lblref.setText("");
+		lblm.setText("");
     }
     private void initPerspective(Camera cam,Group g) {
     	cam.setRotationAxis(Rotate.X_AXIS);
