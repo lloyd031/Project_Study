@@ -17,7 +17,7 @@ public class Run{
 	private double h4=0;
 	File table = new File("src/resources/table.txt");
 	//File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
-	File saturationtable = new File("src/resources/saturationtable.txt");
+	File saturationtable = new File("src/resources/saturationtable.csv");
 	public Run(String ref, double evapTemp, double condenseTemp, double designTemp) {
 		this.refrigerant=ref;
 		this.condenseTemp=condenseTemp;
