@@ -17,13 +17,16 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.AmbientLight;
 import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.PointLight;
+import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -35,6 +38,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -106,9 +110,9 @@ public class MainController implements Initializable{
 	@FXML 
     private BorderPane borderPane;
 	@FXML
-	private MenuItem btnsave,btnopen;
+	private MenuItem btnsave,btnopen,btnbill;
 	@FXML 
-    private TextField txtlength,txtwidth,txtheight,txtacul,txtacut,txtacur,txtacub,txtcompl,txtcompw,txtcompd,txtcompt,txtcompr,txtcomph,txtcompb;
+    private TextField txtsx,txtsz,txtlx,txtlz,txtlength,txtwidth,txtheight,txtacul,txtacut,txtacur,txtacub,txtcompl,txtcompw,txtcompd,txtcompt,txtcompr,txtcomph,txtcompb;
 	@FXML 
     private TextField txtevapw,txtevaph,txtevapd,txtdesigntemp,txtevaptemp,txtcondensetemp,lblcap,lblcap2,lblm,lblref;
 	@FXML
@@ -191,7 +195,10 @@ public class MainController implements Initializable{
         	this.running=false;
         	String r=run();
         	if(r.equals("")) {
-        		
+        		btnsysout.setStyle("-fx-background-color: #3c4454; ");
+        		btnsuctionline.setStyle("-fx-background-color:#2d3441 ;");
+        		btnliquidline.setStyle("-fx-background-color: #2d3441; ");
+        		btnref.setStyle("-fx-background-color:#2d3441 ;");
         		output1.setText("Capacity");
             	output2.setText("");
             	output3.setText("Mass flow rate");
@@ -243,6 +250,9 @@ public class MainController implements Initializable{
         });
         btnsave.setOnAction(e -> {
         	saveAs();
+        });
+        btnbill.setOnAction(e->{
+        	openNewWindow();
         });
         
         btnopen.setOnAction(e -> {
@@ -307,6 +317,7 @@ public class MainController implements Initializable{
                 }
             }
         });
+        
         btnsuctionline.setOnMouseClicked(e->{
         	
         	if(this.running==true) {
@@ -345,6 +356,17 @@ public class MainController implements Initializable{
         	}
         });
         
+    }
+    private void openNewWindow() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("Billing.fxml"));
+            Stage newStage = new Stage();
+            newStage.setTitle("FXML New Window");
+            newStage.setScene(new Scene(root));
+            newStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void saveAs() {
 
@@ -413,7 +435,7 @@ public class MainController implements Initializable{
 						System.out.println("Liquid line ");
 						this.pipesizeL=r.getLiquidLineSize();
 						System.out.println("equivalent size for liquid line "+ this.pipesizeL);
-						this.equivlengthL= r.getEquivalentLength(this.pipesizeL,3.45);
+						this.equivlengthL= r.getEquivalentLength(this.pipesizeL,3.45,Double.parseDouble(txtlx.getText()), Double.parseDouble(txtlz.getText()));
 						this.tempdropL=r.getTempDropLiquidLine(this.pipesizeL,this.equivlengthL,this.capacityinkw);
 						System.out.println("liquidLineLength "+this.equivlengthL);
 						String scientificNotation = String.format("%.2e", this.tempdropL);
@@ -434,7 +456,7 @@ public class MainController implements Initializable{
 						System.out.println("equivalent size for suction line "+ this.pipesizeS);
 						
 							try {
-								this.equivlengthS= r.getEquivalentLength(this.pipesizeS,0);
+								this.equivlengthS= r.getEquivalentLength(this.pipesizeS,0,Double.parseDouble(txtsx.getText()), Double.parseDouble(txtsz.getText()));
 							}catch(Exception e) {
 								JOptionPane.showMessageDialog(null, "No Equivalent length for fitting","Error "+this.pipesizeS+" mm",JOptionPane.ERROR_MESSAGE);
 								return "";

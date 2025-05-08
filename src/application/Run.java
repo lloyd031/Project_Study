@@ -138,7 +138,7 @@ public String setSuctionLine() throws FileNotFoundException {
 		return this.mmliquid;
 	}
 
-	double getEquivalentLength(double line, double filterDrier) throws FileNotFoundException {
+	double getEquivalentLength(double line, double filterDrier,double deltaX, double deltaZ) throws FileNotFoundException {
 		
 		double rad=0;
 		double length=0;
@@ -153,7 +153,7 @@ public String setSuctionLine() throws FileNotFoundException {
 		}
 		ref=scanner.nextLine();
 		rad=Double.parseDouble(ref);
-		length=4+2+rad*2+filterDrier;
+		length=deltaX+deltaZ+rad*2+filterDrier;
 		return length;
 		
 	}

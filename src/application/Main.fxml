@@ -23,7 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="600.0" style="-fx-background-color: #212830;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="537.0" prefWidth="600.0" style="-fx-background-color: #212830;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <center>
       <SubScene fx:id="threeDModel" depthBuffer="true" BorderPane.alignment="CENTER">
         <root>
@@ -37,58 +37,32 @@
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
-            <MenuBar>
+            <MenuBar prefWidth="600.0">
               <menus>
                 <Menu mnemonicParsing="false" style="-fx-font-color: white;" text="File">
                      <items>
-                        <MenuItem mnemonicParsing="false" text="New" />
                         <MenuItem fx:id="btnopen" mnemonicParsing="false" text="Open..." />
                         <MenuItem fx:id="btnsave" mnemonicParsing="false" text="Save" />
-                        <MenuItem mnemonicParsing="false" text="Save As..." />
-                        <MenuItem mnemonicParsing="false" text="Exit" />
                      </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Help">
                     <items>
                       <MenuItem mnemonicParsing="false" text="About" />
                         <MenuItem mnemonicParsing="false" text="FAQ" />
-                        <MenuItem mnemonicParsing="false" text="Read documentation" />
-                        <MenuItem mnemonicParsing="false" text="Open GitHub Repository" />
+                        <MenuItem fx:id="btnbill" mnemonicParsing="false" text="Billing" />
                     </items>
                   </Menu>
               </menus>
             </MenuBar>
             <HBox prefHeight="25.0" spacing="10.0" style="-fx-background-color: #3c4454;">
                <children>
-                  <Label>
-                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../resources/clipboard.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
+                  <Label prefHeight="21.0" prefWidth="399.0" text="Split-Type Air Conditioning System Software Automation" textFill="WHITE">
+                     <font>
+                        <Font name="System Italic" size="15.0" />
+                     </font>
                   </Label>
-                  <Label>
-                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../resources/open-folder.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Label>
-                  <Label>
-                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../resources/save.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Label>
-                  <Separator prefHeight="39.0" prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS" />
-                  <ComboBox fx:id="cbboxref" promptText="R-22" />
+                  <Separator prefHeight="25.0" prefWidth="65.0" visible="false" HBox.hgrow="ALWAYS" />
+                  <ComboBox fx:id="cbboxref" prefHeight="25.0" prefWidth="77.0" promptText="R-22" />
                   <Label fx:id="runbtn">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
@@ -469,6 +443,132 @@
                               <Insets />
                            </VBox.margin>
                         </VBox>
+                        <VBox alignment="CENTER" spacing="3.0" style="-fx-background-color: #3c4655;">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Label text="Suction Line" textFill="WHITE">
+                                       <font>
+                                          <Font name="Arial" size="13.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <HBox />
+                              <Accordion>
+                                 <panes>
+                                    <TitledPane fx:id="acrdncomploc1" prefWidth="85.0" text="Location">
+                                       <content>
+                                          <VBox alignment="TOP_CENTER" spacing="2.5">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="3.0" style="-fx-background-color: #3c465500;">
+                                                   <children>
+                                                      <Label text="X : ">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtsx" focusTraversable="false" prefWidth="60.0" text="0">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Label text="m" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="3.0" style="-fx-background-color: #3c465500;">
+                                                   <children>
+                                                      <Label text="Z : ">
+                                                         <font>
+                                                            <Font size="12.5" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtsz" focusTraversable="false" prefWidth="60.0" text="0">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Label text="m" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="3.0" style="-fx-background-color: #3c465500;" />
+                                                <HBox alignment="CENTER_LEFT" spacing="3.0" style="-fx-background-color: #3c465500;" />
+                                             </children>
+                                          </VBox>
+                                       </content>
+                                    </TitledPane>
+                                 </panes>
+                              </Accordion>
+                              <HBox alignment="CENTER" />
+                              <HBox />
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="3.0" style="-fx-background-color: #3c4655;">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Label text="Liquid Line" textFill="WHITE">
+                                       <font>
+                                          <Font name="Arial" size="13.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <HBox />
+                              <Accordion>
+                                 <panes>
+                                    <TitledPane fx:id="acrdncomploc11" prefWidth="85.0" text="Location">
+                                       <content>
+                                          <VBox alignment="TOP_CENTER" spacing="2.5">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="3.0" style="-fx-background-color: #3c465500;">
+                                                   <children>
+                                                      <Label text="X : ">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtlx" focusTraversable="false" prefWidth="60.0" text="0">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Label text="m" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="3.0" style="-fx-background-color: #3c465500;">
+                                                   <children>
+                                                      <Label text="Z : ">
+                                                         <font>
+                                                            <Font size="12.5" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtlz" focusTraversable="false" prefWidth="60.0" text="0">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Label text="m" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="3.0" style="-fx-background-color: #3c465500;" />
+                                                <HBox alignment="CENTER_LEFT" spacing="3.0" style="-fx-background-color: #3c465500;" />
+                                             </children>
+                                          </VBox>
+                                       </content>
+                                    </TitledPane>
+                                 </panes>
+                              </Accordion>
+                              <HBox alignment="CENTER" />
+                              <HBox />
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
                      </children>
                   </VBox>
                </content>
@@ -624,7 +724,7 @@
                         </TextField>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER">
+                  <HBox alignment="CENTER" prefHeight="164.0" prefWidth="600.0">
                      <children>
                         <Label fx:id="output4" text="Refrigerating effect" textFill="WHITE">
                            <padding>
@@ -647,9 +747,6 @@
          </BorderPane.margin>
       </VBox>
    </bottom>
-   <right>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
-   </right>
    
    
 </BorderPane>
