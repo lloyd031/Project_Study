@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #3c4454;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.BillingController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="647.0" style="-fx-background-color: #3c4454;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.BillingController">
    <top>
       <HBox alignment="CENTER" prefHeight="30.0" prefWidth="600.0" spacing="2.0">
          <children>
@@ -24,8 +24,8 @@
                </font>
             </Label>
             <Separator prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" onAction="#handleAddRow" text="PRINT" />
-            <Button mnemonicParsing="false" onAction="#handleAddRow" text="SAVE" />
+            <Button mnemonicParsing="false" text="PRINT" />
+            <Button mnemonicParsing="false" text="SAVE" />
          </children>
       </HBox>
    </top>
@@ -42,56 +42,57 @@
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="127.0" />
+                  <TextField fx:id="txtunitprice" prefHeight="25.0" prefWidth="127.0" />
                </children>
             </HBox>
             <ScrollPane prefHeight="200.0" prefWidth="200.0" style="-fx-background: #212830;">
                <content>
                   <GridPane fx:id="gridPane" hgap="2.0">
                     <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="90.0" minWidth="10.0" prefWidth="47.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="122.0" minWidth="10.0" prefWidth="92.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="109.0" minWidth="10.0" prefWidth="95.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="113.0" minWidth="10.0" prefWidth="107.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="117.0" />
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="105.0" minWidth="10.0" prefWidth="66.0" />
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="79.0" minWidth="10.0" prefWidth="65.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="90.0" minWidth="10.0" prefWidth="21.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="112.0" minWidth="10.0" prefWidth="60.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="91.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="87.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="173.0" minWidth="10.0" prefWidth="115.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="163.0" minWidth="10.0" prefWidth="104.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="136.0" minWidth="10.0" prefWidth="75.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="55.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label text="QTY" textFill="WHITE">
+                        <Label text="QTY" textFill="WHITE" GridPane.columnIndex="1">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="LENGTH(m)" textFill="WHITE" GridPane.columnIndex="1">
+                        <Label text="LENGTH(m)" textFill="WHITE" GridPane.columnIndex="2">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="MATERIAL" textFill="WHITE" GridPane.columnIndex="2">
+                        <Label text="MATERIAL" textFill="WHITE" GridPane.columnIndex="3">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="DIAMETER(mm)" textFill="WHITE" GridPane.columnIndex="3">
+                        <Label text="DIAMETER(mm)" textFill="WHITE" GridPane.columnIndex="4">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="APPLICATION" textFill="WHITE" GridPane.columnIndex="4">
+                        <Label text="APPLICATION" textFill="WHITE" GridPane.columnIndex="5">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="PRICE" textFill="WHITE" GridPane.columnIndex="5">
+                        <Label text="PRICE" textFill="WHITE" GridPane.columnIndex="6">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="TOTAL" textFill="WHITE" GridPane.columnIndex="6">
+                        <Label text="TOTAL" textFill="WHITE" GridPane.columnIndex="7">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -111,7 +112,8 @@
             </Label>
             <HBox spacing="4.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#handleAddRow" text="ADD" />
+                  <Button fx:id="btnadd" mnemonicParsing="false" onAction="#callHandleAddRow" text="ADD" />
+                  <Button fx:id="btnrem" mnemonicParsing="false" onAction="#remove" text="REMOVE" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="32.0" prefWidth="584.0" spacing="8.0">
@@ -121,7 +123,7 @@
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="127.0" />
+                  <TextField fx:id="txtlaborcost" prefHeight="25.0" prefWidth="127.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="32.0" prefWidth="584.0" spacing="8.0">

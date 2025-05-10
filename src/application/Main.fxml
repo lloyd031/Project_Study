@@ -23,7 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="537.0" prefWidth="600.0" style="-fx-background-color: #212830;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="549.0" prefWidth="600.0" style="-fx-background-color: #212830;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <center>
       <SubScene fx:id="threeDModel" depthBuffer="true" BorderPane.alignment="CENTER">
         <root>
@@ -468,7 +468,7 @@
                                                             <Font size="13.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtsx" focusTraversable="false" prefWidth="60.0" text="0">
+                                                      <TextField fx:id="txtsx" focusTraversable="false" prefWidth="60.0" text="4">
                                                          <font>
                                                             <Font size="13.0" />
                                                          </font>
@@ -483,7 +483,7 @@
                                                             <Font size="12.5" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtsz" focusTraversable="false" prefWidth="60.0" text="0">
+                                                      <TextField fx:id="txtsz" focusTraversable="false" prefWidth="60.0" text="2">
                                                          <font>
                                                             <Font size="13.0" />
                                                          </font>
@@ -531,7 +531,7 @@
                                                             <Font size="13.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtlx" focusTraversable="false" prefWidth="60.0" text="0">
+                                                      <TextField fx:id="txtlx" focusTraversable="false" prefWidth="60.0" text="4">
                                                          <font>
                                                             <Font size="13.0" />
                                                          </font>
@@ -546,7 +546,7 @@
                                                             <Font size="12.5" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtlz" focusTraversable="false" prefWidth="60.0" text="0">
+                                                      <TextField fx:id="txtlz" focusTraversable="false" prefWidth="60.0" text="2">
                                                          <font>
                                                             <Font size="13.0" />
                                                          </font>
@@ -667,11 +667,6 @@
                      </padding>
                   </Label>
                   <Separator opacity="0.0" HBox.hgrow="ALWAYS" />
-                  <Label style="-fx-background-color: #3c4454;" text="00:00" textFill="WHITE">
-                     <padding>
-                        <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
-                     </padding>
-                  </Label>
                </children>
             </HBox>
             <VBox prefHeight="100.0" style="-fx-background-color: #3c4454;">
@@ -741,6 +736,11 @@
                   </HBox>
                </children>
             </VBox>
+            <Label text="Developed by Mechanical &amp; Computer Engineering Departments, NORSU – College of Engineering and Architecture" textFill="WHITE">
+               <padding>
+                  <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
+               </padding>
+            </Label>
          </children>
          <BorderPane.margin>
             <Insets />

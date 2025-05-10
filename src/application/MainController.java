@@ -359,9 +359,13 @@ public class MainController implements Initializable{
     }
     private void openNewWindow() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("Billing.fxml"));
+        	FXMLLoader loader=new FXMLLoader(getClass().getResource("Billing.fxml"));
+            Parent root = loader.load();
+            BillingController controller=loader.getController();
+            controller.loadCol(equivlengthL,equivlengthS,pipesizeL,pipesizeS);
             Stage newStage = new Stage();
-            newStage.setTitle("FXML New Window");
+            newStage.setTitle("Billing of Materials");
+            newStage.setResizable(false);
             newStage.setScene(new Scene(root));
             newStage.show();
         } catch (Exception e) {
