@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="647.0" style="-fx-background-color: #3c4454;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.BillingController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="380.0" prefWidth="647.0" style="-fx-background-color: #3c4454;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.BillingController">
    <top>
       <HBox alignment="CENTER" prefHeight="30.0" prefWidth="600.0" spacing="2.0">
          <children>
@@ -24,8 +24,8 @@
                </font>
             </Label>
             <Separator prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" text="PRINT" />
-            <Button mnemonicParsing="false" text="SAVE" />
+            <Button fx:id="btnprint" mnemonicParsing="false" text="PRINT" />
+            <Button fx:id="btnsave" mnemonicParsing="false" text="SAVE" />
          </children>
       </HBox>
    </top>
@@ -133,7 +133,7 @@
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txttotal" prefHeight="25.0" prefWidth="127.0" />
+                  <TextField fx:id="txttotal" editable="false" prefHeight="25.0" prefWidth="127.0" />
                </children>
             </HBox>
          </children>
