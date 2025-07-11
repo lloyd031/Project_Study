@@ -15,9 +15,9 @@ public class Run{
 	private double condenseTemp=0;
 	private double designTemp=0;
 	private double h4=0;
-	File table = new File("src/resources/table.txt");
-	//File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
-	File saturationtable = new File("src/resources/saturationtable.csv");
+	//File table = new File("resources/table.txt");
+	File table=new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\table.txt");
+	File saturationtable = new File("C:\\Users\\petil\\eclipse-workspace\\SoftwareAutomationPiping\\src\\resources\\saturationtable.csv");
 	public Run(String ref, double evapTemp, double condenseTemp, double designTemp) {
 		this.refrigerant=ref;
 		this.condenseTemp=condenseTemp;
@@ -44,7 +44,7 @@ public String setSuctionLine() throws FileNotFoundException {
 			
 			ref=scanner.nextLine();
 		};
-		System.out.println(evapTemp+"");
+		//System.out.println(evapTemp+"");
 		
 	    if(ref.equals("};"+this.refrigerant+" closing")) {
 			return "invalid evaporator temperature value";
@@ -181,12 +181,15 @@ public String setSuctionLine() throws FileNotFoundException {
 		for(int j=0; j<i;j++) {
 			s=scanner.nextLine();
 		}
+		System.out.println("dsfdsf  "+ 0.02+"x"+actualLength+"/"+30.4878+"x("+actualCapacity+"/"+Double.parseDouble(s)+")^1.8");
 		temp=(0.02)*(actualLength/30.4878)*Math.pow((actualCapacity/Double.parseDouble(s)), 1.8);
+		//System.out.println(temp);
 		return temp;
 	}
 	
 	double getTempDropSuctionLine(double mm, double actualLength, double actualCapacity) throws FileNotFoundException {
 		double temp=0;
+		
 		temp=(designTemp)*(actualLength/30.4878)*Math.pow((actualCapacity/this.tableCap), 1.8);
 		return temp;
 	}
@@ -297,7 +300,7 @@ public String setSuctionLine() throws FileNotFoundException {
 		String[] values = ref.split(",");
 		double val= Double.parseDouble(values[1]);
 		double area = (Math.PI/4)*Math.pow((mmsuction/1000), 2);
-		System.out.println(area);
+		//System.out.println(area);
 		return (val/area);
 }
   public double getSpecVolumeLiquid() throws FileNotFoundException {

@@ -60,7 +60,6 @@ public class MainController implements Initializable{
 	private double tempX=0;
 	private double tempY=0;
 	private boolean err=false;
-	private double roomHieght=20;
 	private final DoubleProperty angleX=new SimpleDoubleProperty(0);
 	private final DoubleProperty angleY=new SimpleDoubleProperty(45);
 	private DoubleProperty acuX=null;
@@ -74,7 +73,8 @@ public class MainController implements Initializable{
     private double width=50;
     private double height=24;
     private double length=70;
-    private int selectedwall=2;
+    private int selectedwall2=0;
+    private int selectedwall=3;
     private Box[] n;
     private Box[] n2;
     private PointLight acuL;
@@ -171,6 +171,7 @@ public class MainController implements Initializable{
     	cbboxwall.setOnAction(event -> {
             root3D.getChildren().removeAll(acu,acuL,cmp);
             selectedwall=cbboxwall.getSelectionModel().getSelectedIndex();
+            //selectedwall2=selectedwall;
             acu=setAcu();
             cmp=setCompressor();
             drawPipe();
@@ -439,54 +440,61 @@ public class MainController implements Initializable{
 						System.out.println("Liquid line ");
 						this.pipesizeL=r.getLiquidLineSize();
 						System.out.println("equivalent size for liquid line "+ this.pipesizeL);
-						this.equivlengthL= r.getEquivalentLength(this.pipesizeL,3.45,Double.parseDouble(txtlx.getText()), Double.parseDouble(txtlz.getText()));
-						this.tempdropL=r.getTempDropLiquidLine(this.pipesizeL,this.equivlengthL,this.capacityinkw);
-						System.out.println("liquidLineLength "+this.equivlengthL);
-						String scientificNotation = String.format("%.2e", this.tempdropL);
-						String[] parts = scientificNotation.split("e");
-						String base = parts[0];
-						String exponent = parts[1].replace("+", "");
-						System.out.println("tempdrop liquid line  "+base + "x10^" + exponent);
-						double pressdropLa=r.getPressureDropLiquid()*(this.tempdropL/0.02);
 						
-						System.out.println("pressure drop liquid line "+pressdropLa);
-						double pressureFromRiser=r.getPressureDropFromRiser(pressdropLa);
-						System.out.println("pressure drop from the riser "+pressureFromRiser);
-						System.out.println("total pressure drop "+ (pressdropLa + pressureFromRiser));
-						this.pressdropL=(pressdropLa + pressureFromRiser);
-						System.out.println();
-						System.out.println("Suction line ");
+						try {
+							this.equivlengthL= r.getEquivalentLength(this.pipesizeL,0.0254,Double.parseDouble(txtlx.getText()), Double.parseDouble(txtlz.getText()));
+							this.tempdropL=r.getTempDropLiquidLine(this.pipesizeL,this.equivlengthL,this.capacityinkw);
+							System.out.println("liquidLineLength "+this.equivlengthL);
+							String scientificNotation = String.format("%.2e", this.tempdropL);
+							String[] parts = scientificNotation.split("e");
+							String base = parts[0];
+							String exponent = parts[1].replace("+", "");
+							System.out.println("tempdrop liquid line  "+base + "x10^" + exponent);
+							double pressdropLa=r.getPressureDropLiquid()*(this.tempdropL/0.02);
+							
+							System.out.println("pressure drop liquid line "+pressdropLa);
+							double pressureFromRiser=r.getPressureDropFromRiser(pressdropLa);
+							System.out.println("pressure drop from the riser "+pressureFromRiser);
+							System.out.println("total pressure drop "+ (pressdropLa + pressureFromRiser));
+							this.pressdropL=(pressdropLa + pressureFromRiser);
+							System.out.println();
+							System.out.println("Suction line ");
+							
+							System.out.println("equivalent size for suction line "+ this.pipesizeS);
+							
+								try {
+									this.equivlengthS= r.getEquivalentLength(this.pipesizeS,0,Double.parseDouble(txtsx.getText()), Double.parseDouble(txtsz.getText()));
+								}catch(Exception e) {
+									JOptionPane.showMessageDialog(null, "No Equivalent length for fitting","Error "+this.pipesizeS+" mm",JOptionPane.ERROR_MESSAGE);
+									return "";
+								}
+									System.out.println("suctionLineLength "+this.equivlengthS);
+									this.tempdropS=r.getTempDropSuctionLine(this.pipesizeS,this.equivlengthS,this.capacityinkw);
+									String scientificNotation1 = String.format("%.2e", this.tempdropS);
+									String[] parts1 = scientificNotation1.split("e");
+									String base1 = parts1[0];
+									String exponent1 = parts1[1].replace("+", "");
+									System.out.println("tempdrop suction line  "+ base1 + "x10^" + exponent1);
+									
+									this.pressdropS=r.getPressureDropSuction()*this.tempdropS/designTemp;
+									System.out.println("pressure drop suction line "+this.pressdropS);
+									System.out.println(r.getPressureDropSuction()+" x "+this.tempdropS+" / "+designTemp);
+									double h1=r.getEnthalpyGas();
+									double h4=r.getEnthalpyLiquid();
+									this.refeffect=h1-h4;
+									System.out.println("Refrigeration effect "+ h1 + " - "+ h4 + " = "+this.refeffect);
+									this.massflow=r.getCapacityInKW()/this.refeffect;
+									double volGas =r.getSpecVolumeGas();
+									this.velocityS=volGas*this.massflow;
+									System.out.println("Refrigerant velocity in suction line "+ this.velocityS);
+									double volLiquid =r.getSpecVolumeLiquid();
+									this.velocityL=volLiquid*this.massflow;
+									System.out.println("Refrigerant velocity in liquid line "+ this.velocityL);
+									this.running=true;
+						}catch(Exception ex) {
+							JOptionPane.showMessageDialog(null, "No Equivalent length for fitting","Error "+this.equivlengthL+" mm",JOptionPane.ERROR_MESSAGE);
+						} 
 						
-						System.out.println("equivalent size for suction line "+ this.pipesizeS);
-						
-							try {
-								this.equivlengthS= r.getEquivalentLength(this.pipesizeS,0,Double.parseDouble(txtsx.getText()), Double.parseDouble(txtsz.getText()));
-							}catch(Exception e) {
-								JOptionPane.showMessageDialog(null, "No Equivalent length for fitting","Error "+this.pipesizeS+" mm",JOptionPane.ERROR_MESSAGE);
-								return "";
-							}
-								System.out.println("suctionLineLength "+this.equivlengthS);
-								this.tempdropS=r.getTempDropSuctionLine(this.pipesizeS,this.equivlengthS,this.capacityinkw);
-								String scientificNotation1 = String.format("%.2e", this.tempdropS);
-								String[] parts1 = scientificNotation1.split("e");
-								String base1 = parts1[0];
-								String exponent1 = parts1[1].replace("+", "");
-								System.out.println("tempdrop suction line  "+ base1 + "x10^" + exponent1);
-								
-								this.pressdropS=r.getPressureDropSuction()*this.tempdropS/designTemp;
-								System.out.println("pressure drop suction line "+this.pressdropS);
-								double h1=r.getEnthalpyGas();
-								double h4=r.getEnthalpyLiquid();
-								this.refeffect=h1-h4;
-								System.out.println("Refrigeration effect "+ h1 + " - "+ h4 + " = "+this.refeffect);
-								this.massflow=r.getCapacityInKW()/this.refeffect;
-								double volGas =r.getSpecVolumeGas();
-								this.velocityS=volGas*this.massflow;
-								System.out.println("Refrigerant velocity in suction line "+ this.velocityS);
-								double volLiquid =r.getSpecVolumeLiquid();
-								this.velocityL=volLiquid*this.massflow;
-								System.out.println("Refrigerant velocity in liquid line "+ this.velocityL);
-								this.running=true;
 							
 						
 						
@@ -610,6 +618,7 @@ public class MainController implements Initializable{
     }
     private void initAcuDragged() {
     	int i=(selectedwall==2 || selectedwall==1)?1:-1;
+    	int j=(selectedwall2==2 || selectedwall2==1)?1:-1;
     	acu.setOnMousePressed(e->{
     		prepdragproperty(e.getX(),e.getY(),0,acuX.get(),acuY.get());
     	});
@@ -627,15 +636,20 @@ public class MainController implements Initializable{
     	if(selectedwall==2 || selectedwall ==3) {
     		
     			acu.translateXProperty().bind(acuX);
-    			cmp.translateXProperty().bind(compX);
     		
     		
     	}else {
     		acu.translateZProperty().bind(acuX);
-    		cmp.translateZProperty().bind(compX);
     	}
     	
-    	
+    	if(selectedwall2==2 || selectedwall2 ==3) {
+    		
+			cmp.translateXProperty().bind(compX);
+		
+		
+		}else {
+			cmp.translateZProperty().bind(compX);
+		}
     	acu.setOnMouseDragged(e->{
     		
         	if(selectedcomp==0) {
@@ -695,7 +709,7 @@ public class MainController implements Initializable{
     		//double rightBound=(selectedwall>1)?width/-2 - wall*2:length/-2 - wall*2;
         	if(selectedcomp==1) {
         		
-            	double newX=tempX+(anchorX-e.getSceneX())/10*i;
+            	double newX=tempX+(anchorX-e.getSceneX())/10*j;
             	double newY=tempY-(anchorY-e.getSceneY())/10;
             	cmp.translateYProperty().bind(compY);
             	compX.set(newX);
@@ -754,7 +768,6 @@ public class MainController implements Initializable{
     		}
 			txtcompt.setText(String.format("%.2f",height/10 - Math.abs((cmp.getTranslateY()-comph)/10)));
     		txtcompb.setText(String.format("%.2f",Math.abs(cmp.getTranslateY()/10)));
-    		drawPipe();
 }
     private void initializeLocationAcu()
     {
@@ -790,7 +803,7 @@ public class MainController implements Initializable{
         addAcul(root3D);
         PointLight pLight=new PointLight();
 		pLight.setColor(Color.WHITE);
-		pLight.getTransforms().add(new Translate(0,roomHieght*-1-7,0));
+		pLight.getTransforms().add(new Translate(0,height*-1-7,0));
         root3D.getChildren().addAll(acu,cmp,flowlinea,pLight);
     }
     private void addAcul(Group root) {
@@ -854,7 +867,7 @@ public class MainController implements Initializable{
 	    return  acu;
     }
    	private Group setCompressor() {
-    	int i=selectedwall;
+    	int i=selectedwall2;
     	Node wall=this.n2[i];
     	int z=(i==2 || i==0)?-1:1;
     	int deg=(i==2)?180:(i==3)?0:(i==0)?270:90;
@@ -883,10 +896,12 @@ public class MainController implements Initializable{
 	    compressor.setRotate(deg);
 	    
 	    if(i==2 || i==3) {
-	    	compressor.translateZProperty().set(wall.getTranslateZ()-(compd+this.wall)/2*z - 3.048*z) ;
+	    	compressor.translateZProperty().set(wall.getTranslateZ()-(compd+this.wall)/2*z - 0.984252*z) ;
 	    	
 	    }else if(i==0 || i ==1) {
-	    	compressor.translateXProperty().set(wall.getTranslateX()-(compd+this.wall)/2*z - 3.048*z);
+	    	//System.out.println(wall.getTranslateX()-(compd+this.wall)/2*z);
+	    	compressor.translateXProperty().set(wall.getTranslateX()-(compd+this.wall)/2*z - 0.984252*z);
+	    	
 	    }
 	    compressor.translateYProperty().set((height)/-2 + acuh);
 	   
@@ -894,11 +909,12 @@ public class MainController implements Initializable{
     }
    	private void drawPipe() {
    		flowlinea.getChildren().clear();
-   		 
+   		 //compd/2*-mul2+0.984252/2*-mul2
    		for(int i=0; i<2; i++) {
    			int mul=(selectedwall==2|| selectedwall==0)?1:-1;
-   			double x1=(selectedwall>1)?cmp.getTranslateX()+compw/2*-mul+0.25*-mul:cmp.getTranslateX()+compd/2*-mul;
-   			double z1=(selectedwall>1)?cmp.getTranslateZ()+compd/2*-mul:cmp.getTranslateZ()+compw/2*mul+0.25*mul;
+   			int mul2=(selectedwall2==2|| selectedwall2==0)?1:-1;
+   			double x1=(selectedwall2>1)?cmp.getTranslateX()+compw/2*-mul2+0.25*-mul2:cmp.getTranslateX()+compd/2*-mul2;
+   			double z1=(selectedwall2>1)?cmp.getTranslateZ()+compd/2*-mul2:cmp.getTranslateZ()+compw/2*mul2+0.25*mul2;
    			double x2=(selectedwall>1)?acu.getTranslateX()-acuw/2*-mul+0.5*-mul:n[selectedwall].getTranslateX()+this.wall*2*mul-0.25*mul;
    			double z2=(selectedwall>1)?n[selectedwall].getTranslateZ()+this.wall*2*mul-0.25*mul:acu.getTranslateZ()-acuw/2*mul;
    			double y1=cmp.getTranslateY();
@@ -906,14 +922,14 @@ public class MainController implements Initializable{
    			this.start=new PathNode(x1,y1-((i==0)?(y1>=y2)?1:2:(y1<=y2)?1:2),z1);
    			this.end=new PathNode((selectedwall>1)?((i==0)?(x1>=x2)?x2-1:x2:(x1<=x2)?x2-1:x2):x2,y2-1,(selectedwall>1)?z2:((i==0)?(z1>=z2)?z2-1:z2:(z1<=z2)?z2-1:z2));
    			
-   			Pipe p=new Pipe(this.start, this.end,this.selectedwall);
+   			Pipe p=new Pipe(this.start, this.end,this.selectedwall,this.selectedwall2,width,height);
    			Stack<PathNode> k=p.getPath();
    			PathNode path[]=new PathNode[p.getPath().size()];
    			for(int j=0; j<path.length; j++) {
    					path[j]=k.pop();
    				}
    			
-   			for(int j=path.length-1; j>=0; j--) {
+   			for(int j=path.length-1; j>0; j--) {
    				if(j!=0) {
    					if(path[j].getZ()<path[j-1].getZ() || path[j].getZ()>path[j-1].getZ()){
    						double w=path[j-1].getZ()-path[j].getZ();
@@ -932,11 +948,20 @@ public class MainController implements Initializable{
    						pathpoint.setRotationAxis(Rotate.Z_AXIS);
    		    			this.flowlinea.getChildren().add(pathpoint);// System.out.println(path[j].getX()+"------ "+path[j].getY()+"------ "+path[j].getZ());
    					}
+   				}else {
+   					
+   					
    				}
-   					 
    				
+   				/**
+   				 * 
+   					Cylinder pathpoint=createpn(0.984252,start.getX(),start.getY(), start.getZ()-wall,90);
+   		   			pathpoint.setRotationAxis(Rotate.X_AXIS);
+   					this.flowlinea.getChildren().add(pathpoint);
+   				 */
    				
    			}
+   			
    		 
    		}
 		
@@ -988,30 +1013,7 @@ public class MainController implements Initializable{
 		c.setMaterial(material);
     	return c;
     }
-    private Box prepareBox(double width, double height, double length,double x, double y, double z, int floor) {
-		PhongMaterial material = new PhongMaterial();
-	if(floor==1) {
-			material.setDiffuseMap(new Image(getClass().getResourceAsStream("/resources/wood.jpg")));
-			material.setSpecularColor(Color.WHITE);
-		}else if(floor==2)
-		{
-		 material.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/resources/gray.jpg")));
-		 
-		}else {
-			material.setDiffuseColor(Color.GREY);
-			//material.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/resources/white.jpg")));
-		}
-		
-		
-		
-		Box box= new Box(width,length, height);
-		box.translateYProperty().set(y);
-		box.translateXProperty().set(x);
-		box.translateZProperty().set(z);
-		box.setMaterial(material);
-		
-		return box;
-	}
+    
   
     int c=0;
     private Node[] drawRoom(double roomWidth, double roomHieght, double roomLength) {
@@ -1041,6 +1043,30 @@ public class MainController implements Initializable{
 		
         
 		return wall;
+	}
+    private Box prepareBox(double width, double height, double length,double x, double y, double z, int floor) {
+		PhongMaterial material = new PhongMaterial();
+	if(floor==1) {
+			material.setDiffuseMap(new Image(getClass().getResourceAsStream("/resources/wood.jpg")));
+			material.setSpecularColor(Color.WHITE);
+		}else if(floor==2)
+		{
+		 material.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/resources/gray.jpg")));
+		 
+		}else {
+			material.setDiffuseColor(Color.GREY);
+			//material.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/resources/white.jpg")));
+		}
+		
+		
+		
+		Box box= new Box(width,length, height);
+		box.translateYProperty().set(y);
+		box.translateXProperty().set(x);
+		box.translateZProperty().set(z);
+		box.setMaterial(material);
+		
+		return box;
 	}
 	private Node[] prepareLightSource() {
 		AmbientLight amLight= new AmbientLight();
